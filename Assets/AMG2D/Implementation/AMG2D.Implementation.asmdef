@@ -1,0 +1,17 @@
+{
+    "name": "AMG2D.Implementation",
+    "rootNamespace": "AMG2D.Implementation",
+    "references": [
+        "AMG2D.Configuration",
+        "AMG2D.Model"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
