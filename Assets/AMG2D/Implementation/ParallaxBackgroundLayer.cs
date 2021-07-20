@@ -9,13 +9,14 @@ namespace AMG2D.Implementation
     /// </summary>
     internal class ParallaxBackgroundLayer
     {
-        private static readonly int MAP_PADDING = 1;
+        private const int MAP_PADDING = 1;
         private BackgroundLayerConfig _config;
         private Vector2 _initalPosition;
         private int _height;
         private GameObject BackgroundPrefab { get; }
         private float _referenceXPosition;
         private float _width;
+        private readonly GameObject _camera;
 
         /// <summary>
         /// Create a new instance of <see cref="ParallaxBackgroundLayer"/> using the provided configuration information.
@@ -24,12 +25,13 @@ namespace AMG2D.Implementation
         /// <param name="position"></param>
         /// <param name="height"></param>
         /// <param name="sortOrder"></param>
-        internal ParallaxBackgroundLayer(BackgroundLayerConfig config, Vector2 position, int height, short sortOrder)
+        internal ParallaxBackgroundLayer(BackgroundLayerConfig config, GameObject camera, Vector2 position, int height, short sortOrder)
         {
             _config = config ?? throw new ArgumentException($"Argument {nameof(config)} cannot be null.");
+            _camera = camera ?? throw new ArgumentException($"Argument {nameof(camera)} cannot be null.");
             _initalPosition = position;
             _height = height;
-            _config.BaseImage.GetComponent<SpriteRenderer>().sortingOrder = sortOrder;
+            //_config.BaseImage.GetComponent<SpriteRenderer>().sortingOrder = sortOrder;
             BackgroundPrefab = CreateBackgroundLayerPrefeb(config);
             _referenceXPosition = BackgroundPrefab.transform.position.x;
         }
@@ -47,6 +49,10 @@ namespace AMG2D.Implementation
 
             //Create parent to hold all background instances.
             var finalPrefab = new GameObject();
+            if (config.ParallaxIntensity > 0.5f)
+            {
+                finalPrefab.transform.SetParent(_camera.transform);
+            }
             finalPrefab.transform.position = config.BaseImage.transform.position;
             config.BaseImage.transform.SetParent(finalPrefab.transform);
 
@@ -88,17 +94,17 @@ namespace AMG2D.Implementation
         /// Update the position of this background layer based on the new camera position.
         /// </summary>
         /// <param name="newCameraPosition">New camera poisition</param>
-        public void UpdatePosition(float newCameraPosition)
+        public void UpdatePosition()
         {
+            var newCameraPosition = _camera.transform.position.x;
             float avanceParallax = _referenceXPosition + (newCameraPosition - _referenceXPosition) * _config.ParallaxIntensity;
             float distCameraParallax = newCameraPosition - avanceParallax;
 
-            BackgroundPrefab.transform.position = new Vector3(avanceParallax,
+            var targetPos = new Vector3(avanceParallax,
                 BackgroundPrefab.transform.position.y,
                 BackgroundPrefab.transform.position.z);
-
-            if (distCameraParallax >= _width) _referenceXPosition = newCameraPosition;
-            else _referenceXPosition = newCameraPosition;
+            BackgroundPrefab.transform.position = targetPos;
+            if (Math.Abs(distCameraParallax) >= _width) _referenceXPosition = newCameraPosition;
         }
     }
 }

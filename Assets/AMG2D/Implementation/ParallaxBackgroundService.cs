@@ -9,10 +9,9 @@ namespace AMG2D.Implementation
 {
     public class ParallaxBackgroundService : IBackgroundService
     {
-        private GeneralMapConfig _config;
-        private float posInic, anchura;
+        private readonly GeneralMapConfig _config;
+        private readonly List<ParallaxBackgroundLayer> _layers = new List<ParallaxBackgroundLayer>();
         private bool _mapLimitsSet = false;
-        private List<ParallaxBackgroundLayer> _layers = new List<ParallaxBackgroundLayer>();
 
         public ParallaxBackgroundService(GeneralMapConfig mapConfig)
         {
@@ -23,7 +22,7 @@ namespace AMG2D.Implementation
         {
             foreach (var layerConfig in _config.Background.BackgroundLayers)
             {
-                _layers.Add(new ParallaxBackgroundLayer(layerConfig, position, height, 0));
+                _layers.Add(new ParallaxBackgroundLayer(layerConfig, _config.Camera, position, height, 0));
             }
             _mapLimitsSet = true;
         }
@@ -37,9 +36,8 @@ namespace AMG2D.Implementation
             {
                 foreach (var layer in _layers)
                 {
-                    layer.UpdatePosition(_config.Camera.transform.position.x);
+                    layer.UpdatePosition();
                 }
-                //Parallel.ForEach(_layers, layer => layer.UpdatePosition(_config.Camera.transform.position.x));
             }
         }
     }

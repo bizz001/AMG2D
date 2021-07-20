@@ -60,11 +60,11 @@ namespace AMG2D
         private void FixedUpdate()
         {
             _elementFactory.ActivateTiles(this, _baseMap.PersistedMap);
+            _background.UpdateBackground();
         }
 
         private void Update()
         {
-            _background.UpdateBackground();
             
         }
 
