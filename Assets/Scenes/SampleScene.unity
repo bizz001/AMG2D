@@ -179,7 +179,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.6792453, g: 0.667862, b: 0.60555357, a: 0}
   m_FlipX: 0
@@ -557,7 +557,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 35.99175
+  orthographic size: 24.420834
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -725,7 +725,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.20011114, g: 0.7075472, b: 0.050062295, a: 1}
   m_FlipX: 0
@@ -807,7 +807,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.7169812, g: 0.5011189, b: 0.32805273, a: 1}
   m_FlipX: 0
@@ -969,25 +969,25 @@ MonoBehaviour:
         BackgroundLayers:
         - BaseImage: {fileID: 611539253}
           ParallaxIntensity: 0
-          Repetition: 3
+          Repetition: 5
         - BaseImage: {fileID: 1005721740}
-          ParallaxIntensity: 0
-          Repetition: 3
+          ParallaxIntensity: 0.1
+          Repetition: 5
         - BaseImage: {fileID: 916020245}
-          ParallaxIntensity: 1
-          Repetition: 3
+          ParallaxIntensity: 0.75
+          Repetition: 5
         - BaseImage: {fileID: 1268330385}
-          ParallaxIntensity: 1
-          Repetition: 3
+          ParallaxIntensity: 0.8
+          Repetition: 5
         - BaseImage: {fileID: 1929290735}
-          ParallaxIntensity: 1
-          Repetition: 3
+          ParallaxIntensity: 0.85
+          Repetition: 5
         - BaseImage: {fileID: 263994818}
           ParallaxIntensity: 0.9
-          Repetition: 3
+          Repetition: 5
         - BaseImage: {fileID: 500155387}
-          ParallaxIntensity: 1
-          Repetition: 3
+          ParallaxIntensity: 0.98
+          Repetition: 1
         - BaseImage: {fileID: 1603297803}
           ParallaxIntensity: 1
           Repetition: 3
