@@ -1,3 +1,14 @@
 {
-	"name": "AMG2D.Configuration"
+    "name": "AMG2D.Configuration",
+    "rootNamespace": "AMG2D.Configuration",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

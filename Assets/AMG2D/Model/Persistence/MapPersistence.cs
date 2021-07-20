@@ -80,7 +80,7 @@ namespace AMG2D.Model.Persistence
                 var yComponent = new TileInformation[yIterator];
                 for (int y = 0; y < yIterator; y++)
                 {
-                    yComponent[y] = new TileInformation(x, y, x / SegmentSize + 1);
+                    yComponent[y] = new TileInformation(x, y, (x / SegmentSize) + 1);
                 }
                 emptyMap.Add(yComponent);
             }

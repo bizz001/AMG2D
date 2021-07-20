@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace AMG2D
 {
+    /*
     [CustomEditor(typeof(MapGenerator), true)]
     [CanEditMultipleObjects]
     public class MapGeneratorEditor : Editor
@@ -20,5 +21,5 @@ namespace AMG2D
 
             if (GUILayout.Button("Generate")) mapGenerator.Generate();
         }
-    }
+    }*/
 }

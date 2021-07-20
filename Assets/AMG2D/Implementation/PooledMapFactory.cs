@@ -54,13 +54,13 @@ namespace AMG2D.Implementation
 
         private void ActivateAllTiles(IEnumerable<TileInformation[]> tiles)
         {
-            if (tiles.First().First().IsActive) return;
+            if (tiles == null) return;
             foreach (var tilesLine in tiles)
             {
                 foreach (var tile in tilesLine)
                 {
                     var currentTileType = GetObjectType(tile.TileType);
-                    if (!tile.IsActive && _tilesPool[currentTileType].TryDequeue(out var pooledTile))
+                    if (tile.CurrentPrefab == null && _tilesPool[currentTileType].TryDequeue(out var pooledTile))
                     {
                         pooledTile.transform.position = new Vector2(tile.X, tile.Y);
                         pooledTile.SetActive(true);
@@ -69,6 +69,7 @@ namespace AMG2D.Implementation
                     else
                     {
                         tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType], new Vector2(tile.X, tile.Y), Quaternion.identity);
+                        tile.CurrentPrefab.SetActive(true);
                     }
                 }
             }
@@ -76,9 +77,9 @@ namespace AMG2D.Implementation
 
         private void ActivateSegmentedTiles(IEnumerable<TileInformation[]> tiles)
         {
-            lock (_activationLock)
+            lock(_activationLock)
             {
-                var currentPlayerSegment = (int)_config.Camera.transform.position.x / _config.SegmentSize + 1;
+                var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
                 if (currentPlayerSegment == _lastPlayerSegment) return;
 
                 //add current player segment and neighbouring segments
@@ -87,12 +88,18 @@ namespace AMG2D.Implementation
                 activeSegments.Add(currentPlayerSegment - 1);
                 activeSegments.Add(currentPlayerSegment + 1);
 
-                if(_lastActiveSegments != null && _lastActiveSegments.Any())
+                if(_lastActiveSegments != null)
                 {
-                    _lastActiveSegments.RemoveAll(segment => activeSegments.Contains(segment));
-                    ReleaseTiles(tiles.Select(tileLine => tileLine).Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber)));
+                    ReleaseTiles(tiles.Select(tileLine => tileLine).Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber)
+                                        && !activeSegments.Contains(tileLine.First().SegmentNumber)));
+                    ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)
+                                        && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)));
                 }
-                ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)));
+                else
+                {
+                    ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)));
+
+                }
 
                 _lastPlayerSegment = currentPlayerSegment;
                 _lastActiveSegments = activeSegments;

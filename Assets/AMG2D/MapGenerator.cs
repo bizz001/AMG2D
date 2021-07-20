@@ -27,8 +27,6 @@ namespace AMG2D
         [SerializeReference]
         public GeneralMapConfig Config;
 
-
-
         void Start()
         {
             _baseMap = new MapPersistence(Config.Width, Config.Height, Config.SegmentSize);
@@ -41,12 +39,12 @@ namespace AMG2D
             };
             Config.ObjectSeeds = seeds;
             ServiceLocator.Build(Config);
-
             ResolveServices();
+
+            _background.SetMapLimits(transform.position, Config.Height);
 
             Generate();
             
-
             Debug.Log(_baseMap.ToString());
         }
 
@@ -62,7 +60,12 @@ namespace AMG2D
         private void FixedUpdate()
         {
             _elementFactory.ActivateTiles(this, _baseMap.PersistedMap);
+        }
+
+        private void Update()
+        {
             _background.UpdateBackground();
+            
         }
 
         private void ResolveServices()

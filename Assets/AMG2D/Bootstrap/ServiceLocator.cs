@@ -25,7 +25,8 @@ namespace AMG2D.Bootstrap
                 { typeof(ITileEnhancer), new BasicTileEnhancer(mapConfig) },
                 { typeof(ICaveGenerator), new CompleteMapGenerator(mapConfig) },
                 { typeof(IPlatformGenerator), new CompleteMapGenerator(mapConfig) },
-                { typeof(IGroundGenerator), new CompleteMapGenerator(mapConfig) }
+                { typeof(IGroundGenerator), new CompleteMapGenerator(mapConfig) },
+                { typeof(IBackgroundService), new ParallaxBackgroundService(mapConfig) }
             };
 
             _isBuilt = true;

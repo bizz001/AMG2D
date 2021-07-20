@@ -56,6 +56,8 @@ namespace AMG2D.Configuration
         }
 
         public Dictionary<EGameObjectType, GameObject> ObjectSeeds;
+        [SerializeReference]
+        public BackgroundConfig Background = new BackgroundConfig();
 
         /// <summary>
         /// Camera object for movement tracking;

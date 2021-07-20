@@ -1,6 +1,6 @@
 {
     "name": "AMG2D",
-    "rootNamespace": "",
+    "rootNamespace": "AMG2D",
     "references": [
         "AMG2D.Bootstrap",
         "AMG2D.Configuration",
