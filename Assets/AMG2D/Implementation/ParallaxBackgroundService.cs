@@ -22,7 +22,7 @@ namespace AMG2D.Implementation
         {
             foreach (var layerConfig in _config.Background.BackgroundLayers)
             {
-                _layers.Add(new ParallaxBackgroundLayer(layerConfig, _config.Camera, position, height, 0));
+                _layers.Add(new ParallaxBackgroundLayer(layerConfig, _config, position, height));
             }
             _mapLimitsSet = true;
         }

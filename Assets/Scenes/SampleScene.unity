@@ -955,8 +955,8 @@ MonoBehaviour:
       type: {class: GeneralMapConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
         _isCorrectnessChecked: 0
-        _height: 50
-        _width: 1000
+        _height: 70
+        _width: 500
         Background:
           id: 1
         Camera: {fileID: 519420028}
@@ -966,6 +966,9 @@ MonoBehaviour:
     00000001:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
+        VerticalParallaxModifier: 1
+        HorizonHeight: 0.5
+        MapPadding: -10
         BackgroundLayers:
         - BaseImage: {fileID: 611539253}
           ParallaxIntensity: 0
@@ -1408,7 +1411,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 50
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
