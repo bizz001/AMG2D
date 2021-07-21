@@ -977,10 +977,10 @@ MonoBehaviour:
           ParallaxIntensity: 0.1
           Repetition: 5
         - BaseImage: {fileID: 916020245}
-          ParallaxIntensity: 0.75
+          ParallaxIntensity: 0.3
           Repetition: 5
         - BaseImage: {fileID: 1268330385}
-          ParallaxIntensity: 0.8
+          ParallaxIntensity: 0.5
           Repetition: 5
         - BaseImage: {fileID: 1929290735}
           ParallaxIntensity: 0.85
