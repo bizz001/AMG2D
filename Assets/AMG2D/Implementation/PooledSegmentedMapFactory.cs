@@ -24,14 +24,10 @@ namespace AMG2D.Implementation
         private Dictionary<EGameObjectType, ConcurrentQueue<GameObject>> _externalObjectsPool;
 
         private ConcurrentQueue<GameObject> _segmentPool;
-
-        private List<GameObject> _currentSegments;
-
         private GeneralMapConfig _config;
         private readonly Dictionary<int, GameObject> _segmentParents;
         private int _lastPlayerSegment;
         private List<int> _lastActiveSegments;
-        private readonly object _activationLock = new object();
 
         /// <summary>
         /// 
@@ -43,6 +39,7 @@ namespace AMG2D.Implementation
 
             _segmentParents = new Dictionary<int, GameObject>();
             _tilesPool = new Dictionary<EGameObjectType, ConcurrentQueue<GameObject>>();
+            _segmentPool = new ConcurrentQueue<GameObject>();
             foreach (var seed in _config.ObjectSeeds)
             {
                 _tilesPool.Add(seed.Key, new ConcurrentQueue<GameObject>());
@@ -79,11 +76,15 @@ namespace AMG2D.Implementation
                     {
                         tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType], new Vector2(tile.X, tile.Y), Quaternion.identity);
                     }
-                    if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject parent))
+                    if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject parent)) //search active segments first
                     {
-                        parent = new GameObject { name = $"MapSegment{tile.SegmentNumber}" };
-                        parent.AddComponent<CompositeCollider2D>().generationType = CompositeCollider2D.GenerationType.Manual;
-                        parent.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                        if(!_segmentPool.TryDequeue(out parent)) //try pool second
+                        {
+                            parent = new GameObject();
+                            parent.AddComponent<CompositeCollider2D>().generationType = CompositeCollider2D.GenerationType.Manual;
+                            parent.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                        }
+                        parent.name = $"MapSegment{tile.SegmentNumber}";
                         _segmentParents.Add(tile.SegmentNumber, parent);
                     }
                     tile.CurrentPrefab.transform.SetParent(parent.transform);
@@ -99,34 +100,31 @@ namespace AMG2D.Implementation
 
         private bool ActivateSegmentedTiles(TileInformation[][] tiles)
         {
-            lock(_activationLock)
+            var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
+            if (currentPlayerSegment == _lastPlayerSegment) return false;
+            
+            //add current player segment and neighbouring segments
+            var activeSegments = new List<int>();
+            activeSegments.Add(currentPlayerSegment);
+            for (int i = 1; i <= (_config.NumberOfSegments - 1) / 2; i++)
             {
-                var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
-                if (currentPlayerSegment == _lastPlayerSegment) return false;
-
-                //add current player segment and neighbouring segments
-                var activeSegments = new List<int>();
-                activeSegments.Add(currentPlayerSegment);
-
-                for (int i = 1; i <= (_config.NumberOfSegments - 1) / 2; i++)
-                {
-                    activeSegments.Add(currentPlayerSegment - i);
-                    activeSegments.Add(currentPlayerSegment + i);
-                }
-                if(_lastActiveSegments != null)
-                {
-                    ReleaseTiles(tiles.Select(tileLine => tileLine)
-                        .Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber) && !activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
-                    ActivateAllTiles(tiles.Select(tileLine => tileLine)
-                        .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
-                }
-                else
-                {
-                    ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
-                }
-                _lastPlayerSegment = currentPlayerSegment;
-                _lastActiveSegments = activeSegments;
+                activeSegments.Add(currentPlayerSegment - i);
+                activeSegments.Add(currentPlayerSegment + i);
             }
+            if(_lastActiveSegments != null)
+            {
+                ReleaseTiles(tiles.Select(tileLine => tileLine)
+                    .Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber) && !activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
+                ActivateAllTiles(tiles.Select(tileLine => tileLine)
+                    .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
+            }
+            else
+            {
+                ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
+            }
+            _lastPlayerSegment = currentPlayerSegment;
+            _lastActiveSegments = activeSegments;
+            
             return true;
         }
 
@@ -142,7 +140,11 @@ namespace AMG2D.Implementation
                 {
                     if (tile.CurrentPrefab != null)
                     {
-                        tile.CurrentPrefab.SetActive(false);
+                        if (_segmentParents.TryGetValue(tile.SegmentNumber, out var segment))
+                        {
+                            _segmentParents.Remove(tile.SegmentNumber);
+                            _segmentPool.Enqueue(segment);
+                        }
                         _tilesPool[GetObjectType(tile.TileType)].Enqueue(tile.CurrentPrefab);
                         tile.CurrentPrefab = null;
                     }

@@ -848,13 +848,13 @@ MonoBehaviour:
       data:
         _isCorrectnessChecked: 0
         _height: 70
-        _width: 500
+        _width: 1000
         Background:
           id: 1
         Camera: {fileID: 519420028}
         EnableSegmentation: 1
-        SegmentSize: 10
-        NumberOfSegments: 20
+        SegmentSize: 15
+        NumberOfSegments: 5
     00000001:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
