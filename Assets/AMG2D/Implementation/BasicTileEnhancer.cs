@@ -2,6 +2,7 @@
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
 using AMG2D.Configuration;
+using UnityEngine;
 
 namespace AMG2D.Implementation
 {
@@ -21,7 +22,13 @@ namespace AMG2D.Implementation
 
         void ITileEnhancer.SetTilesCollider(ref MapPersistence map)
         {
-            throw new NotImplementedException();
+            foreach (var tileLine in map.PersistedMap)
+            {
+                foreach (var tile in tileLine)
+                {
+                }
+            }
+
         }
     }
 }

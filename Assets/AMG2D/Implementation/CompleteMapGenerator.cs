@@ -17,11 +17,19 @@ public class CompleteMapGenerator : ICaveGenerator, IGroundGenerator, IPlatformG
         _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
     }
 
+    /// <summary>
+    /// Hola <see cref="CompleteMapGenerator"/>
+    /// </summary>
+    /// <param name="map"></param>
     void ICaveGenerator.CreateCaves(ref MapPersistence map)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="map"></param>
     void IGroundGenerator.CreateGround(ref MapPersistence map)
     {
         width = map.Width;

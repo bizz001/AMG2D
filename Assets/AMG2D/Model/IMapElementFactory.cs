@@ -8,7 +8,7 @@ namespace AMG2D.Model
 {
     public interface IMapElementFactory
     {
-        public void ActivateTiles(MonoBehaviour parent, IEnumerable<TileInformation[]> tile);
+        public bool ActivateTiles(IEnumerable<TileInformation[]> tile);
         public void ReleaseTiles(IEnumerable<TileInformation[]> tile);
 
     }

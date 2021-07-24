@@ -44,22 +44,19 @@ namespace AMG2D
             _background.SetMapLimits(transform.position, Config.Height);
 
             Generate();
-            
             Debug.Log(_baseMap.ToString());
         }
 
-        public void Generate()
+        private void Generate()
         {
-            _elementFactory.ReleaseTiles(_baseMap.PersistedMap);
             _baseMap.ClearMap();
             _groundGenerator.CreateGround(ref _baseMap);
-            
-            _elementFactory.ActivateTiles(this, _baseMap.PersistedMap);
+            _elementFactory.ActivateTiles(_baseMap.PersistedMap);
         }
 
         private void FixedUpdate()
         {
-            _elementFactory.ActivateTiles(this, _baseMap.PersistedMap);
+            _elementFactory.ActivateTiles(_baseMap.PersistedMap);
         }
         
         private void LateUpdate()

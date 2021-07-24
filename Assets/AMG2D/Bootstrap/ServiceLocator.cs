@@ -21,7 +21,7 @@ namespace AMG2D.Bootstrap
 
             _services = new Dictionary<Type, object>
             {
-                { typeof(IMapElementFactory), new PooledMapFactory(mapConfig) },
+                { typeof(IMapElementFactory), new PooledSegmentedMapFactory(mapConfig) },
                 { typeof(ITileEnhancer), new BasicTileEnhancer(mapConfig) },
                 { typeof(ICaveGenerator), new CompleteMapGenerator(mapConfig) },
                 { typeof(IPlatformGenerator), new CompleteMapGenerator(mapConfig) },
