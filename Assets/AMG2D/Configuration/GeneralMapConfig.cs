@@ -68,7 +68,7 @@ namespace AMG2D.Configuration
 
         public int SegmentSize;
 
-        public int CameraWidth;
+        public int NumberOfSegments;
 
         /// <summary>
         /// 
