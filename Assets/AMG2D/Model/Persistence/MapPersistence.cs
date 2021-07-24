@@ -13,7 +13,7 @@ namespace AMG2D.Model.Persistence
         /// <summary>
         /// 
         /// </summary>
-        public IList<TileInformation[]> PersistedMap { get; }
+        public TileInformation[][] PersistedMap { get; }
 
         /// <summary>
         /// 
@@ -59,7 +59,7 @@ namespace AMG2D.Model.Persistence
             }
         }
 
-        private IList<TileInformation[]> CreateEmptyMap()
+        private TileInformation[][] CreateEmptyMap()
         {
             int xIterator, yIterator;
             if (_isMapVertical)
@@ -74,7 +74,7 @@ namespace AMG2D.Model.Persistence
             }
 
             //create empty map
-            var emptyMap = new List<TileInformation[]>();
+            var emptyMap = new TileInformation[xIterator][];
             for (int x = 0; x < xIterator; x++)
             {
                 var yComponent = new TileInformation[yIterator];
@@ -82,7 +82,7 @@ namespace AMG2D.Model.Persistence
                 {
                     yComponent[y] = new TileInformation(x, y, (x / SegmentSize) + 1);
                 }
-                emptyMap.Add(yComponent);
+                emptyMap[x] = yComponent;
             }
             return emptyMap;
         }

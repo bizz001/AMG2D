@@ -23,10 +23,12 @@ namespace AMG2D.Implementation
 
         private Dictionary<EGameObjectType, ConcurrentQueue<GameObject>> _externalObjectsPool;
 
-        private Dictionary<int, GameObject> _segmentParents;
+        private ConcurrentQueue<GameObject> _segmentPool;
+
+        private List<GameObject> _currentSegments;
 
         private GeneralMapConfig _config;
-
+        private readonly Dictionary<int, GameObject> _segmentParents;
         private int _lastPlayerSegment;
         private List<int> _lastActiveSegments;
         private readonly object _activationLock = new object();
@@ -52,13 +54,13 @@ namespace AMG2D.Implementation
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="tiles"></param>
-        public bool ActivateTiles(IEnumerable<TileInformation[]> tiles)
+        public bool ActivateTiles(TileInformation[][] tiles)
         {
             if (_config.EnableSegmentation) return ActivateSegmentedTiles(tiles);
             else return ActivateAllTiles(tiles);
         }
 
-        private bool ActivateAllTiles(IEnumerable<TileInformation[]> tiles)
+        private bool ActivateAllTiles(TileInformation[][] tiles)
         {
             if (tiles == null) return false;
             HashSet<int> activatedSegments = new HashSet<int>();
@@ -95,7 +97,7 @@ namespace AMG2D.Implementation
             return true;
         }
 
-        private bool ActivateSegmentedTiles(IEnumerable<TileInformation[]> tiles)
+        private bool ActivateSegmentedTiles(TileInformation[][] tiles)
         {
             lock(_activationLock)
             {
@@ -114,14 +116,13 @@ namespace AMG2D.Implementation
                 if(_lastActiveSegments != null)
                 {
                     ReleaseTiles(tiles.Select(tileLine => tileLine)
-                        .Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber) && !activeSegments.Contains(tileLine.First().SegmentNumber)));
+                        .Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber) && !activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
                     ActivateAllTiles(tiles.Select(tileLine => tileLine)
-                        .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)));
+                        .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
                 }
                 else
                 {
-                    ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)));
-
+                    ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
                 }
                 _lastPlayerSegment = currentPlayerSegment;
                 _lastActiveSegments = activeSegments;
@@ -133,7 +134,7 @@ namespace AMG2D.Implementation
         /// 
         /// </summary>
         /// <param name="tiles"></param>
-        public void ReleaseTiles(IEnumerable<TileInformation[]> tiles)
+        public void ReleaseTiles(TileInformation[][] tiles)
         {
             foreach (var tilesLine in tiles)
             {                
