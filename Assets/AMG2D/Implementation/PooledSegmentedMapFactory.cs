@@ -8,9 +8,6 @@ using AMG2D.Configuration;
 using AMG2D.Configuration.Enum;
 using System.Collections.Concurrent;
 using System.Linq;
-using UnityEngine.Tilemaps;
-using System.Diagnostics;
-using Debug = UnityEngine.Debug;
 
 namespace AMG2D.Implementation
 {
@@ -75,6 +72,7 @@ namespace AMG2D.Implementation
                     else
                     {
                         tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType], new Vector2(tile.X, tile.Y), Quaternion.identity);
+                        tile.CurrentPrefab.SetActive(true);
                     }
                     if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject parent)) //search active segments first
                     {
@@ -88,7 +86,6 @@ namespace AMG2D.Implementation
                         _segmentParents.Add(tile.SegmentNumber, parent);
                     }
                     tile.CurrentPrefab.transform.SetParent(parent.transform);
-                    tile.CurrentPrefab.SetActive(true);
                 }
             }
             foreach (var segment in activatedSegments)

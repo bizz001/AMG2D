@@ -853,7 +853,7 @@ MonoBehaviour:
           id: 1
         Camera: {fileID: 519420028}
         EnableSegmentation: 1
-        SegmentSize: 15
+        SegmentSize: 50
         NumberOfSegments: 5
     00000001:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}

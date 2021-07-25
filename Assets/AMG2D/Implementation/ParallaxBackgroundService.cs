@@ -40,7 +40,7 @@ namespace AMG2D.Implementation
         }
 
         /// <summary>
-        /// Update background based on current settings. It is recommended to call this from within a FixedUpdate method.
+        /// Update background based on current settings. It is recommended to call this from within a LateUpdate method.
         /// </summary>
         public void UpdateBackground()
         {
