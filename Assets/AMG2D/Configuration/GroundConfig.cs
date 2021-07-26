@@ -2,8 +2,10 @@
 
 namespace AMG2D.Configuration
 {
+    [Serializable]
     public class GroundConfig
     {
-        public int HeightVariation { get; set; }
+        public int InitialHeight;
+        public float Smoothness;
     }
 }

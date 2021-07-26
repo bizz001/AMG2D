@@ -86,20 +86,5 @@ namespace AMG2D.Model.Persistence
             }
             return emptyMap;
         }
-
-        public override string ToString()
-        {
-            var result = string.Empty;
-
-            foreach (var line in PersistedMap)
-            {
-                foreach (var tile in line)
-                {
-                    result += tile.TileType.ToString().Substring(0,1) + " ";
-                }
-                result += "\r\n";
-            }
-            return result;
-        }
     }
 }

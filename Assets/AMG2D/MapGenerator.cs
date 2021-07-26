@@ -33,7 +33,8 @@ namespace AMG2D
             if (Config == null) Config = new GeneralMapConfig();
             var seeds = new Dictionary<EGameObjectType, GameObject>()
             {
-                { EGameObjectType.GroundTile, grass },
+                { EGameObjectType.GroundTile, dirt },
+                { EGameObjectType.GrassTile, grass },
                 { EGameObjectType.AirTile, stone }
 
             };
@@ -44,10 +45,9 @@ namespace AMG2D
             _background.SetMapLimits(transform.position, Config.Height);
 
             Generate();
-            Debug.Log(_baseMap.ToString());
         }
 
-        private void Generate()
+        public void Generate()
         {
             _baseMap.ClearMap();
             _groundGenerator.CreateGround(ref _baseMap);

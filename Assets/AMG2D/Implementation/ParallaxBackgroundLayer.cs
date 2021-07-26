@@ -31,7 +31,6 @@ namespace AMG2D.Implementation
             _generalConfig = GeneralConfig ?? throw new ArgumentException($"Argument {nameof(GeneralConfig)} cannot be null.");
             _initalPosition = position;
             _height = height;
-            //_config.BaseImage.GetComponent<SpriteRenderer>().sortingOrder = sortOrder;
             BackgroundPrefab = CreateBackgroundLayerPrefeb(layerConfig);
             _referenceXPosition = BackgroundPrefab.transform.position.x;
         }

@@ -23,6 +23,8 @@ namespace AMG2D.Configuration
         [SerializeField]
         private Dictionary<EGameObjectType, GameObject> _aspects;
 
+        public int GenerationSeed;
+
         /// <summary>
         /// 
         /// </summary>
@@ -58,6 +60,10 @@ namespace AMG2D.Configuration
         public Dictionary<EGameObjectType, GameObject> ObjectSeeds;
         [SerializeReference]
         public BackgroundConfig Background = new BackgroundConfig();
+
+
+        [SerializeReference]
+        public GroundConfig Ground = new GroundConfig();
 
         /// <summary>
         /// Camera object for movement tracking;

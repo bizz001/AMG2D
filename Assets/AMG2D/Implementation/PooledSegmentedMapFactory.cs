@@ -8,6 +8,7 @@ using AMG2D.Configuration;
 using AMG2D.Configuration.Enum;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AMG2D.Implementation
 {
@@ -25,6 +26,8 @@ namespace AMG2D.Implementation
         private readonly Dictionary<int, GameObject> _segmentParents;
         private int _lastPlayerSegment;
         private List<int> _lastActiveSegments;
+
+        private Action _doLater;
 
         /// <summary>
         /// 
@@ -56,6 +59,11 @@ namespace AMG2D.Implementation
 
         private bool ActivateAllTiles(TileInformation[][] tiles)
         {
+            if (_doLater != null)
+            {
+                _doLater.Invoke();
+                _doLater = null;
+            }
             if (tiles == null) return false;
             HashSet<int> activatedSegments = new HashSet<int>();
             foreach (var tilesLine in tiles)
@@ -64,6 +72,7 @@ namespace AMG2D.Implementation
                 foreach (var tile in tilesLine)
                 {
                     var currentTileType = GetObjectType(tile.TileType);
+                    if (tile.TileType == ETileType.Air) continue;
                     if (!tile.IsActive && _tilesPool[currentTileType].TryDequeue(out var pooledTile))
                     {
                         pooledTile.transform.position = new Vector2(tile.X, tile.Y);
@@ -88,10 +97,13 @@ namespace AMG2D.Implementation
                     tile.CurrentPrefab.transform.SetParent(parent.transform);
                 }
             }
-            foreach (var segment in activatedSegments)
+            _doLater = () =>
             {
-                _segmentParents[segment].GetComponent<CompositeCollider2D>().GenerateGeometry();
-            }
+                foreach (var segmentNum in activatedSegments)
+                {
+                    if (_segmentParents.TryGetValue(segmentNum, out var seg)) seg.GetComponent<CompositeCollider2D>().GenerateGeometry();
+                }
+            };
             return true;
         }
 
@@ -155,6 +167,7 @@ namespace AMG2D.Implementation
             {
                 ETileType.Air => EGameObjectType.AirTile,
                 ETileType.Cave => EGameObjectType.CaveTile,
+                ETileType.Grass => EGameObjectType.GrassTile,
                 ETileType.Ground => EGameObjectType.GroundTile,
                 ETileType.Platform => EGameObjectType.PlatformTile,
                 _ => EGameObjectType.Unknown,

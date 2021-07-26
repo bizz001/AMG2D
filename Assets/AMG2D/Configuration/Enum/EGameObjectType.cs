@@ -16,6 +16,11 @@ namespace AMG2D.Configuration.Enum
         GroundTile,
 
         /// <summary>
+        /// Represents grass tiles.
+        /// </summary>
+        GrassTile,
+
+        /// <summary>
         /// Represents platform tiles.
         /// </summary>
         PlatformTile,

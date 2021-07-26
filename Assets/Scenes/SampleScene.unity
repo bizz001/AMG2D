@@ -593,7 +593,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 20
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  m_Color: {r: 0.0509804, g: 0.1898845, b: 0.7058824, a: 1}
+  m_Color: {r: 0.4044741, g: 0.7058824, b: 0.0509804, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -848,13 +848,16 @@ MonoBehaviour:
       data:
         _isCorrectnessChecked: 0
         _height: 70
-        _width: 1000
+        _width: 10000
+        GenerationSeed: 0
         Background:
           id: 1
+        Ground:
+          id: 2
         Camera: {fileID: 519420028}
         EnableSegmentation: 1
-        SegmentSize: 50
-        NumberOfSegments: 5
+        SegmentSize: 20
+        NumberOfSegments: 15
     00000001:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
@@ -864,31 +867,33 @@ MonoBehaviour:
         BackgroundLayers:
         - BaseImage: {fileID: 611539253}
           ParallaxIntensity: 0
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 1005721740}
           ParallaxIntensity: 0.1
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 916020245}
           ParallaxIntensity: 0.3
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 1268330385}
           ParallaxIntensity: 0.5
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 1929290735}
           ParallaxIntensity: 0.85
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 263994818}
           ParallaxIntensity: 0.9
-          Repetition: 5
+          Repetition: 4
         - BaseImage: {fileID: 500155387}
           ParallaxIntensity: 0.98
-          Repetition: 3
+          Repetition: 1
         - BaseImage: {fileID: 1603297803}
           ParallaxIntensity: 1
           Repetition: 3
-        - BaseImage: {fileID: 1603297803}
-          ParallaxIntensity: 1
-          Repetition: 3
+    00000002:
+      type: {class: GroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
+      data:
+        InitialHeight: 70
+        Smoothness: 13
 --- !u!4 &971624180
 Transform:
   m_ObjectHideFlags: 0
