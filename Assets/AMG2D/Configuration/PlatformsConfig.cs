@@ -2,8 +2,20 @@
 
 namespace AMG2D.Configuration
 {
+    [Serializable]
     public class PlatformsConfig
     {
-        public float Density { get; set; }
+        public int MaximumHeight;
+
+        public int MinimumHeight;
+
+        public int Thickness;
+
+        public int Density;
+
+        public int MinWidth;
+
+        public int MaxWidth;
+
     }
 }

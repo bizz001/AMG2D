@@ -57,6 +57,8 @@ namespace AMG2D.Configuration
             }
         }
 
+        public int MapBorderThickness;
+
         public Dictionary<EGameObjectType, GameObject> ObjectSeeds;
         [SerializeReference]
         public BackgroundConfig Background = new BackgroundConfig();
@@ -64,6 +66,9 @@ namespace AMG2D.Configuration
 
         [SerializeReference]
         public GroundConfig Ground = new GroundConfig();
+
+        [SerializeReference]
+        public PlatformsConfig Platforms = new PlatformsConfig();
 
         /// <summary>
         /// Camera object for movement tracking;

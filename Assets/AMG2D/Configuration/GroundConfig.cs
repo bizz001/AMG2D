@@ -6,6 +6,7 @@ namespace AMG2D.Configuration
     public class GroundConfig
     {
         public int InitialHeight;
+
         public float Smoothness;
     }
 }

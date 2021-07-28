@@ -23,6 +23,11 @@ namespace AMG2D.Model.Persistence.Enum
         Grass,
 
         /// <summary>
+        /// Represents grass tiles.
+        /// </summary>
+        Stone,
+
+        /// <summary>
         /// Represents platform tiles.
         /// </summary>
         Platform,

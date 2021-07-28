@@ -35,7 +35,7 @@ namespace AMG2D
             {
                 { EGameObjectType.GroundTile, dirt },
                 { EGameObjectType.GrassTile, grass },
-                { EGameObjectType.AirTile, stone }
+                { EGameObjectType.StoneTile, stone }
 
             };
             Config.ObjectSeeds = seeds;
@@ -51,6 +51,7 @@ namespace AMG2D
         {
             _baseMap.ClearMap();
             _groundGenerator.CreateGround(ref _baseMap);
+            _platformGenerator.CreatePlatforms(ref _baseMap);
             _elementFactory.ActivateTiles(_baseMap.PersistedMap);
         }
 

@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AMG2D.Configuration;
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
 using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = System.Random;
 
 namespace AMG2D.Implementation
 {
-
-
     public class CompleteMapGenerator : ICaveGenerator, IGroundGenerator, IPlatformGenerator
     {
-        private int width, height;
-        private int minStoneheight = 1, maxStoneHeight = 2;
         private GeneralMapConfig _config;
+        private Random _seededRandomGen;
 
         public CompleteMapGenerator(GeneralMapConfig mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
+            _seededRandomGen = new Random(_config.GenerationSeed);
         }
 
         /// <summary>
@@ -37,73 +36,102 @@ namespace AMG2D.Implementation
         /// <param name="map"></param>
         void IGroundGenerator.CreateGround(ref MapPersistence map)
         {
-            //OldCreation(ref map);
-            NewCreation(ref map);
-        }
-
-        private void NewCreation(ref MapPersistence map)
-        {
             for (int x = 0; x < map.PersistedMap.Length; x++)
             {
                 var noise = Mathf.PerlinNoise(x / _config.Ground.Smoothness, _config.GenerationSeed);
                 var terrainHeight = Mathf.RoundToInt(_config.Ground.InitialHeight * noise);
                 foreach (var tile in map.PersistedMap[x])
                 {
-                    if (tile.Y < terrainHeight - 1)
+                    if (tile.Y < terrainHeight)
                     {
                         tile.TileType = ETileType.Ground;
                     }
                     else
                     {
-                        if (tile.Y == terrainHeight || tile.Y == terrainHeight - 1) tile.TileType = ETileType.Grass;
+                        if (tile.Y == terrainHeight) tile.TileType = ETileType.Grass;
 
                     }
-                }
-            }
-        }
-
-        private void OldCreation(ref MapPersistence map)
-        {
-            width = map.Width;
-            height = map.Height / 4;
-            for (int x = 0; x < width; x++)//This will help spawn a tile on the x axis
-            {
-                // now for procedural generation we need to gradually increase and decrease the height value
-                int minHeight = height - 1;
-                int maxHeight = height + 2;
-                height = Random.Range(minHeight, maxHeight);
-                int minStoneSpawnDistance = height - minStoneheight;
-                int maxStoneSpawnDistance = height - maxStoneHeight;
-                int totalStoneSpawnDistance = Random.Range(minStoneSpawnDistance, maxStoneSpawnDistance);
-                //Perlin noise.
-                for (int y = 0; y < height; y++)//This will help spawn a tile on the y axis
-                {
-                    map.PersistedMap[x][y].TileType = ETileType.Ground;
-
-                    if (y < totalStoneSpawnDistance)
-                    {
-                        //spawnObj(stone, x, y);
-                    }
-                    else
-                    {
-                        //spawnObj(dirt, x, y);
-                    }
-
-                }
-                if (totalStoneSpawnDistance == height)
-                {
-                    //spawnObj(stone, x, height);
-                }
-                else
-                {
-                    //spawnObj(grass, x, height);
                 }
             }
         }
 
         void IPlatformGenerator.CreatePlatforms(ref MapPersistence map)
         {
-            throw new NotImplementedException();
+            bool isTopReached = false;
+            while (!isTopReached)
+            {
+                int currentX = 0;
+                while (currentX < map.PersistedMap.Length)
+                {
+                    if (GetRandomBool(_config.Platforms.Density / 100))
+                    {
+                        var platformWidth = GetRandomFromRange(_config.Platforms.MinWidth, _config.Platforms.MaxWidth);
+                        var platformHeight = GetRandomFromRange(_config.Platforms.MinimumHeight, _config.Platforms.MaximumHeight);
+
+                        var platformWidthArea = map.PersistedMap.Skip(currentX - 1).Take(platformWidth + 2);
+                        var maximumGroundHeight = platformWidthArea.Max(column => column.Where(tile => tile.TileType == ETileType.Grass).Max(tile => tile.Y));
+                        var topPlatformTile = maximumGroundHeight + _config.Platforms.Thickness + platformHeight;
+                        var bottomPlatformTile = topPlatformTile - _config.Platforms.Thickness;
+                        platformWidthArea.Skip(1).Take(platformWidth);
+                        if (topPlatformTile < _config.Height - _config.MapBorderThickness)
+                        {
+                            foreach (var column in platformWidthArea)
+                            {
+                                foreach (var tile in column)
+                                {
+                                    if (tile.Y == topPlatformTile) tile.TileType = ETileType.Grass;
+                                    if (tile.Y < topPlatformTile && tile.Y > bottomPlatformTile) tile.TileType = ETileType.Ground;
+                                }
+                            }
+                            currentX += platformWidth;
+                        }
+                        else
+                        {
+                            isTopReached = true;
+                        }
+                    }
+                    currentX++;
+                }
+            }
+            CreateBorder(ref map);
+        }
+
+        private void CreateBorder(ref MapPersistence map)
+        {
+            if (_config.MapBorderThickness == 0) return;
+            for (int y = 0; y < _config.MapBorderThickness; y++)
+            {
+                for (int x = 0; x < map.PersistedMap.Length; x++)
+                {
+                    map.PersistedMap[x][y].TileType = ETileType.Stone;
+                    map.PersistedMap[x][_config.Height - 1 - y].TileType = ETileType.Stone;
+                }
+                foreach (var item in map.PersistedMap[y])
+                {
+                    item.TileType = ETileType.Stone;
+                }
+
+                foreach (var item in map.PersistedMap[map.PersistedMap.Length - y - 1])
+                {
+                    item.TileType = ETileType.Stone;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a random bool value based on the probability provided to return a true.
+        /// </summary>
+        /// <param name="trueProbability"></param>
+        /// <returns></returns>
+        private bool GetRandomBool(float trueProbability)
+        {
+            return (_seededRandomGen.NextDouble() * 100) <= trueProbability;
+        }
+
+        private int GetRandomFromRange(int from, int to)
+        {
+            var range = to - from;
+            return (int)(from + range * _seededRandomGen.NextDouble());
         }
     }
 }

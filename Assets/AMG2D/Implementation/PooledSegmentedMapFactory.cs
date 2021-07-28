@@ -53,17 +53,18 @@ namespace AMG2D.Implementation
         /// <param name="tiles"></param>
         public bool ActivateTiles(TileInformation[][] tiles)
         {
-            if (_config.EnableSegmentation) return ActivateSegmentedTiles(tiles);
-            else return ActivateAllTiles(tiles);
-        }
-
-        private bool ActivateAllTiles(TileInformation[][] tiles)
-        {
             if (_doLater != null)
             {
                 _doLater.Invoke();
                 _doLater = null;
             }
+            if (_config.EnableSegmentation) return ActivateSegmentedTiles(tiles);
+            else if (!tiles.First().First().IsActive) return ActivateAllTiles(tiles);
+            else return true;
+        }
+
+        private bool ActivateAllTiles(TileInformation[][] tiles)
+        {
             if (tiles == null) return false;
             HashSet<int> activatedSegments = new HashSet<int>();
             foreach (var tilesLine in tiles)
@@ -88,7 +89,8 @@ namespace AMG2D.Implementation
                         if(!_segmentPool.TryDequeue(out parent)) //try pool second
                         {
                             parent = new GameObject();
-                            parent.AddComponent<CompositeCollider2D>().generationType = CompositeCollider2D.GenerationType.Manual;
+                            var collider = parent.AddComponent<CompositeCollider2D>();
+                            collider.generationType = CompositeCollider2D.GenerationType.Manual;
                             parent.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
                         }
                         parent.name = $"MapSegment{tile.SegmentNumber}";
@@ -167,6 +169,7 @@ namespace AMG2D.Implementation
             {
                 ETileType.Air => EGameObjectType.AirTile,
                 ETileType.Cave => EGameObjectType.CaveTile,
+                ETileType.Stone => EGameObjectType.StoneTile,
                 ETileType.Grass => EGameObjectType.GrassTile,
                 ETileType.Ground => EGameObjectType.GroundTile,
                 ETileType.Platform => EGameObjectType.PlatformTile,
