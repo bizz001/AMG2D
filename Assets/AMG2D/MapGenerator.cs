@@ -19,6 +19,7 @@ namespace AMG2D
         private ITileEnhancer _tileEnhancer;
         private IGroundGenerator _groundGenerator;
         private IPlatformGenerator _platformGenerator;
+        private IExternalObjectsPositioner _externalObjectsPositioner;
         private ICaveGenerator _caveGenerator;
         private IBackgroundService _background;
 
@@ -31,11 +32,11 @@ namespace AMG2D
         {
             _baseMap = new MapPersistence(Config.Width, Config.Height, Config.SegmentSize);
             if (Config == null) Config = new GeneralMapConfig();
-            var seeds = new Dictionary<EGameObjectType, GameObject>()
+            var seeds = new Dictionary<string, GameObject>()
             {
-                { EGameObjectType.GroundTile, dirt },
-                { EGameObjectType.GrassTile, grass },
-                { EGameObjectType.StoneTile, stone }
+                { EGameObjectType.GroundTile.ToString(), dirt },
+                { EGameObjectType.GrassTile.ToString(), grass },
+                { EGameObjectType.StoneTile.ToString(), stone }
 
             };
             Config.ObjectSeeds = seeds;
@@ -52,7 +53,9 @@ namespace AMG2D
             _baseMap.ClearMap();
             _groundGenerator.CreateGround(ref _baseMap);
             _platformGenerator.CreatePlatforms(ref _baseMap);
+            _externalObjectsPositioner.PositionExternalObjects(ref _baseMap);
             _elementFactory.ActivateTiles(_baseMap.PersistedMap);
+            _elementFactory.ActivateExternalObjects(ref _baseMap);
         }
 
         private void FixedUpdate()
@@ -76,6 +79,8 @@ namespace AMG2D
                 ?? throw new ArgumentNullException($"Service {nameof(IGroundGenerator)} cannot be null");
             _caveGenerator = ServiceLocator.GetService<ICaveGenerator>()
                 ?? throw new ArgumentNullException($"Service {nameof(ICaveGenerator)} cannot be null");
+            _externalObjectsPositioner = ServiceLocator.GetService<IExternalObjectsPositioner>()
+                ?? throw new ArgumentNullException($"Service {nameof(IExternalObjectsPositioner)} cannot be null");
             _platformGenerator = ServiceLocator.GetService<IPlatformGenerator>()
                 ?? throw new ArgumentNullException($"Service {nameof(IPlatformGenerator)} cannot be null");
             _background = ServiceLocator.GetService<IBackgroundService>()

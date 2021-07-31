@@ -59,7 +59,7 @@ namespace AMG2D.Configuration
 
         public int MapBorderThickness;
 
-        public Dictionary<EGameObjectType, GameObject> ObjectSeeds;
+        public Dictionary<string, GameObject> ObjectSeeds;
         [SerializeReference]
         public BackgroundConfig Background = new BackgroundConfig();
 
@@ -69,6 +69,9 @@ namespace AMG2D.Configuration
 
         [SerializeReference]
         public PlatformsConfig Platforms = new PlatformsConfig();
+
+        [SerializeReference]
+        public ExternalObjectsConfig ExternalObjects = new ExternalObjectsConfig();
 
         /// <summary>
         /// Camera object for movement tracking;

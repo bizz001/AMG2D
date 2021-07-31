@@ -1,9 +1,11 @@
-﻿using AMG2D.Configuration.Enum;
+﻿using System;
+using AMG2D.Configuration.Enum;
 using UnityEngine;
 
 namespace AMG2D.Configuration
 {
-    public class ExternalObject
+    [Serializable]
+    public class ExternalObjectConfig
     {
         public string UniqueID;
 

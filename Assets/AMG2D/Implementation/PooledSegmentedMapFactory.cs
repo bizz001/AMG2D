@@ -17,11 +17,11 @@ namespace AMG2D.Implementation
     /// </summary>
     public class PooledSegmentedMapFactory : IMapElementFactory
     {
-        private Dictionary<EGameObjectType, ConcurrentQueue<GameObject>> _tilesPool;
+        private Dictionary<string, Queue<GameObject>> _pools;
 
-        private Dictionary<EGameObjectType, ConcurrentQueue<GameObject>> _externalObjectsPool;
+        private Dictionary<string, Queue<GameObject>> _externalObjectsPool;
 
-        private ConcurrentQueue<GameObject> _segmentPool;
+        private Queue<GameObject> _segmentPool;
         private GeneralMapConfig _config;
         private readonly Dictionary<int, GameObject> _segmentParents;
         private int _lastPlayerSegment;
@@ -38,11 +38,16 @@ namespace AMG2D.Implementation
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
 
             _segmentParents = new Dictionary<int, GameObject>();
-            _tilesPool = new Dictionary<EGameObjectType, ConcurrentQueue<GameObject>>();
-            _segmentPool = new ConcurrentQueue<GameObject>();
+            _pools = new Dictionary<string, Queue<GameObject>>();
+            _segmentPool = new Queue<GameObject>();
             foreach (var seed in _config.ObjectSeeds)
             {
-                _tilesPool.Add(seed.Key, new ConcurrentQueue<GameObject>());
+                _pools.Add(seed.Key, new Queue<GameObject>());
+            }
+
+            foreach (var externalObject in _config.ExternalObjects.ExternalObjects)
+            {
+                _pools.Add(externalObject.UniqueID, new Queue<GameObject>());
             }
         }
 
@@ -74,24 +79,29 @@ namespace AMG2D.Implementation
                 {
                     var currentTileType = GetObjectType(tile.TileType);
                     if (tile.TileType == ETileType.Air) continue;
-                    if (!tile.IsActive && _tilesPool[currentTileType].TryDequeue(out var pooledTile))
+                    if (!tile.IsActive && _pools[currentTileType.ToString()].Count > 0)
                     {
+                        var pooledTile = _pools[currentTileType.ToString()].Dequeue();
                         pooledTile.transform.position = new Vector2(tile.X, tile.Y);
                         tile.CurrentPrefab = pooledTile;
                     }
                     else
                     {
-                        tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType], new Vector2(tile.X, tile.Y), Quaternion.identity);
+                        tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType.ToString()], new Vector2(tile.X, tile.Y), Quaternion.identity);
                         tile.CurrentPrefab.SetActive(true);
                     }
                     if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject parent)) //search active segments first
                     {
-                        if(!_segmentPool.TryDequeue(out parent)) //try pool second
+                        if(_segmentPool.Count == 0) //try pool second
                         {
                             parent = new GameObject();
                             var collider = parent.AddComponent<CompositeCollider2D>();
                             collider.generationType = CompositeCollider2D.GenerationType.Manual;
                             parent.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                        }
+                        else
+                        {
+                            parent = _segmentPool.Dequeue();
                         }
                         parent.name = $"MapSegment{tile.SegmentNumber}";
                         _segmentParents.Add(tile.SegmentNumber, parent);
@@ -156,13 +166,36 @@ namespace AMG2D.Implementation
                             _segmentParents.Remove(tile.SegmentNumber);
                             _segmentPool.Enqueue(segment);
                         }
-                        _tilesPool[GetObjectType(tile.TileType)].Enqueue(tile.CurrentPrefab);
+                        _pools[GetObjectType(tile.TileType).ToString()].Enqueue(tile.CurrentPrefab);
                         tile.CurrentPrefab = null;
                     }
                 }
             }
         }
-        
+
+        public bool ActivateExternalObjects(ref MapPersistence map)
+        {
+            if (_doLater != null)
+            {
+                _doLater.Invoke();
+                _doLater = null;
+            }
+
+            if (_config.EnableSegmentation) return false;
+
+            foreach (var obj in map.ExternalObjects)
+            {
+                obj.SpawnedObject = MonoBehaviour.Instantiate(obj.Template, new Vector2(obj.AsignedTile.X, obj.AsignedTile.Y), Quaternion.identity);
+            }
+            return true;
+
+        }
+
+        public bool ReleaseExternalObject(ref MapPersistence map)
+        {
+            throw new NotImplementedException();
+        }
+
         private EGameObjectType GetObjectType(ETileType tile)
         {
             return tile switch
@@ -176,6 +209,5 @@ namespace AMG2D.Implementation
                 _ => EGameObjectType.Unknown,
             };
         }
-        
     }
 }

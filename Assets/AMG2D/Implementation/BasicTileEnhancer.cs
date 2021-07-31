@@ -22,13 +22,7 @@ namespace AMG2D.Implementation
 
         void ITileEnhancer.SetTilesCollider(ref MapPersistence map)
         {
-            foreach (var tileLine in map.PersistedMap)
-            {
-                foreach (var tile in tileLine)
-                {
-                }
-            }
-
+            
         }
     }
 }

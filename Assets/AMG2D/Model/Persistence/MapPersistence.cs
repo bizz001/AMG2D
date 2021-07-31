@@ -18,6 +18,11 @@ namespace AMG2D.Model.Persistence
         /// <summary>
         /// 
         /// </summary>
+        public List<ExternalObjectInfo> ExternalObjects { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int Width { get; }
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace AMG2D.Model.Persistence
             {
                 throw new ArgumentException($"Parameter {nameof(width)} or {nameof(height)} cannot be 0.");
             }
+            ExternalObjects = new List<ExternalObjectInfo>();
             Width = width;
             Height = height;
             SegmentSize = segmentSize;

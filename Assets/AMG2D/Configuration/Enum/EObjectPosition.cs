@@ -4,7 +4,7 @@
     {
         Any = 0,
         Air,
-        Ground,
+        OnGround,
         Soil,
         Cave
     }

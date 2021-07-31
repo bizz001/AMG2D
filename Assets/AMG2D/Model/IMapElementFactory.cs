@@ -10,6 +10,8 @@ namespace AMG2D.Model
     {
         public bool ActivateTiles(TileInformation[][] tile);
         public void ReleaseTiles(TileInformation[][] tile);
+        public bool ActivateExternalObjects(ref MapPersistence map);
+        public bool ReleaseExternalObject(ref MapPersistence map);
 
     }
 }

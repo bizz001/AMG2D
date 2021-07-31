@@ -10,7 +10,7 @@ using Random = System.Random;
 
 namespace AMG2D.Implementation
 {
-    public class CompleteMapGenerator : ICaveGenerator, IGroundGenerator, IPlatformGenerator
+    public class CompleteMapGenerator : ICaveGenerator, IGroundGenerator, IPlatformGenerator, IExternalObjectsPositioner
     {
         private GeneralMapConfig _config;
         private Random _seededRandomGen;
@@ -25,16 +25,16 @@ namespace AMG2D.Implementation
         /// 
         /// </summary>
         /// <param name="map"></param>
-        void ICaveGenerator.CreateCaves(ref MapPersistence map)
+        public void CreateCaves(ref MapPersistence map)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="map"></param>
-        void IGroundGenerator.CreateGround(ref MapPersistence map)
+        public void CreateGround(ref MapPersistence map)
         {
             for (int x = 0; x < map.PersistedMap.Length; x++)
             {
@@ -55,7 +55,7 @@ namespace AMG2D.Implementation
             }
         }
 
-        void IPlatformGenerator.CreatePlatforms(ref MapPersistence map)
+        public void CreatePlatforms(ref MapPersistence map)
         {
             bool isTopReached = false;
             while (!isTopReached)
@@ -96,6 +96,93 @@ namespace AMG2D.Implementation
             CreateBorder(ref map);
         }
 
+        public void PositionExternalObjects(ref MapPersistence map)
+        {
+            foreach (var configuredObject in _config.ExternalObjects.ExternalObjects)
+            {
+                switch (configuredObject.Position)
+                {
+                    case Configuration.Enum.EObjectPosition.Any:
+                        PositionObjectInAny(ref map, configuredObject);
+                        break;
+                    case Configuration.Enum.EObjectPosition.Air:
+                        PositionObjectInAir(ref map, configuredObject);
+                        break;
+                    case Configuration.Enum.EObjectPosition.OnGround:
+                        PositionObjectOnGround(ref map, configuredObject);
+                        break;
+                    case Configuration.Enum.EObjectPosition.Soil:
+                        PositionObjectInSoil(ref map, configuredObject);
+                        break;
+                    case Configuration.Enum.EObjectPosition.Cave:
+                        PositionObjectInCave(ref map, configuredObject);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void PositionObjectInCave(ref MapPersistence map, ExternalObjectConfig objectToPlace)
+        {
+            return;
+        }
+
+        private void PositionObjectInSoil(ref MapPersistence map, ExternalObjectConfig objectToPlace)
+        {
+            var placementCandidates = map.PersistedMap.SelectMany(column => column.Where(tile => tile.TileType == ETileType.Ground));
+            foreach (var candidate in placementCandidates)
+            {
+                if (GetRandomBool(objectToPlace.Density))
+                {
+                    map.ExternalObjects.Add(new ExternalObjectInfo { AsignedTile = candidate, TypeID = objectToPlace.UniqueID, Template = objectToPlace.ObjectTemplate });
+                }
+            }
+        }
+
+        private void PositionObjectOnGround(ref MapPersistence map, ExternalObjectConfig objectToPlace)
+        {
+            var placementCandidates = new List<TileInformation>();
+
+            for (int x = 0; x < map.PersistedMap.Length; x++)
+            {
+                for (int y = 0; y < map.PersistedMap[x].Length; y++)
+                {
+                    if (map.PersistedMap[x][y].TileType == ETileType.Grass)
+                    {
+                        placementCandidates.Add(map.PersistedMap[x][y + 1]);
+                    }
+                }
+            }
+            foreach (var candidate in placementCandidates)
+            {
+                if (GetRandomBool(objectToPlace.Density))
+                {
+                    map.ExternalObjects.Add(new ExternalObjectInfo { AsignedTile = candidate, TypeID = objectToPlace.UniqueID, Template = objectToPlace.ObjectTemplate });
+                }
+            }
+        }
+
+        private void PositionObjectInAir(ref MapPersistence map, ExternalObjectConfig objectToPlace)
+        {
+            var placementCandidates = map.PersistedMap.SelectMany(column => column.Where(tile => tile.TileType == ETileType.Air));
+            foreach (var candidate in placementCandidates)
+            {
+                if (GetRandomBool(objectToPlace.Density))
+                {
+                    map.ExternalObjects.Add(new ExternalObjectInfo { AsignedTile = candidate, TypeID = objectToPlace.UniqueID, Template = objectToPlace.ObjectTemplate });
+                }
+            }
+        }
+
+        private void PositionObjectInAny(ref MapPersistence map, ExternalObjectConfig objectToPlace)
+        {
+            PositionObjectInAir(ref map, objectToPlace);
+            PositionObjectInCave(ref map, objectToPlace);
+            PositionObjectOnGround(ref map, objectToPlace);
+            PositionObjectInSoil(ref map, objectToPlace);
+        }
+
         private void CreateBorder(ref MapPersistence map)
         {
             if (_config.MapBorderThickness == 0) return;
@@ -133,5 +220,6 @@ namespace AMG2D.Implementation
             var range = to - from;
             return (int)(from + range * _seededRandomGen.NextDouble());
         }
+
     }
 }
