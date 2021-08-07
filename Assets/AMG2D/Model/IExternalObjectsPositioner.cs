@@ -1,9 +1,10 @@
-﻿using AMG2D.Model.Persistence;
+﻿using System.Collections;
+using AMG2D.Model.Persistence;
 
 namespace AMG2D.Model
 {
     public interface IExternalObjectsPositioner
     {
-        void PositionExternalObjects(ref MapPersistence map);
+        public IEnumerator PositionExternalObjects(MapPersistence map, IEnumerator continueWith = null);
     }
 }

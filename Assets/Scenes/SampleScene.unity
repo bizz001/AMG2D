@@ -199,7 +199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15513227}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -66.77, y: -3.13, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -758,6 +758,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeroKnight
       objectReference: {fileID: 0}
+    - target: {fileID: 6323719953710832613, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -961,7 +965,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 399905473}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.07, y: 0.38, z: 0}
+  m_LocalPosition: {x: -63.699997, y: -2.75, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1967,9 +1971,10 @@ MonoBehaviour:
     00000000:
       type: {class: GeneralMapConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        _isCorrectnessChecked: 0
-        _height: 30
-        _width: 500
+        Height: 30
+        Width: 500
+        GroundTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
+        PlatformTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         GenerationSeed: 1336
         MapBorderThickness: 1
         Background:
@@ -1982,8 +1987,10 @@ MonoBehaviour:
           id: 4
         Camera: {fileID: 519420028}
         EnableSegmentation: 0
-        SegmentSize: 20
-        NumberOfSegments: 5
+        SegmentSize: 10
+        NumberOfSegments: 15
+        ObjectsToEnable:
+        - {fileID: 2054118120}
     00000001:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
@@ -2018,7 +2025,7 @@ MonoBehaviour:
     00000002:
       type: {class: GroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        InitialHeight: 10
+        InitialHeight: 15
         Smoothness: 57
     00000003:
       type: {class: PlatformsConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
@@ -2646,7 +2653,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973826515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.04, y: 0.01, z: 0}
+  m_LocalPosition: {x: -66.909996, y: 0.26, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2676,7 +2683,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2047462039}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -64.07, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 611539254}
@@ -2690,3 +2697,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2054118120 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6323719953710832613, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
+  m_PrefabInstance: {fileID: 271147873}
+  m_PrefabAsset: {fileID: 0}

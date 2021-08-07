@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AMG2D.Implementation;
 using AMG2D.Model;
 using AMG2D.Configuration;
+using AMG2D.Implementation.Background;
 
 namespace AMG2D.Bootstrap
 { 
@@ -17,11 +18,10 @@ namespace AMG2D.Bootstrap
         public static void Build(GeneralMapConfig mapConfig)
         {
             if(mapConfig == null) throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
-            if (!mapConfig.CheckCorrectness()) throw new ArgumentException($"Configuration is currently in an incorrect state. Please check configuration.");
-
             _services = new Dictionary<Type, object>
             {
-                { typeof(IMapElementFactory), new PooledSegmentedMapFactory(mapConfig) },
+                { typeof(IMapElementFactory), new PooledMultiPurposeFactory(mapConfig) },
+                { typeof(ITilesFactory), new TiledMapFactory(mapConfig) },
                 { typeof(ITileEnhancer), new BasicTileEnhancer(mapConfig) },
                 { typeof(ICaveGenerator), new CompleteMapGenerator(mapConfig) },
                 { typeof(IPlatformGenerator), new CompleteMapGenerator(mapConfig) },
@@ -29,7 +29,6 @@ namespace AMG2D.Bootstrap
                 { typeof(IExternalObjectsPositioner), new CompleteMapGenerator(mapConfig) },
                 { typeof(IBackgroundService), new ParallaxBackgroundService(mapConfig) }
             };
-
             _isBuilt = true;
         }
 

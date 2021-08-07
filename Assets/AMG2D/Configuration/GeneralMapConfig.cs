@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AMG2D.Configuration.Enum;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace AMG2D.Configuration
 {
@@ -11,58 +12,26 @@ namespace AMG2D.Configuration
     [Serializable]
     public class GeneralMapConfig
     {
-        [SerializeField]
-        private bool _isCorrectnessChecked;
+        public int Height;
 
-        [SerializeField]
-        private int _height;
+        public int Width;
 
-        [SerializeField]
-        private int _width;
+        [SerializeReference]
+        public TileBase GroundTile;
 
-        [SerializeField]
-        private Dictionary<EGameObjectType, GameObject> _aspects;
+        [SerializeReference]
+        public TileBase PlatformTile;
+
+        public Dictionary<EGameObjectType, GameObject> Aspects;
 
         public int GenerationSeed;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Height
-        {
-            get { return _height; }
-            set
-            {
-                if(value != _height)
-                {
-                    _isCorrectnessChecked = false;
-                    _height = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Width
-        {
-            get { return _width; }
-            set
-            {
-                if (value != _width)
-                {
-                    _isCorrectnessChecked = false;
-                    _width = value;
-                }
-            }
-        }
 
         public int MapBorderThickness;
 
         public Dictionary<string, GameObject> ObjectSeeds;
+
         [SerializeReference]
         public BackgroundConfig Background = new BackgroundConfig();
-
 
         [SerializeReference]
         public GroundConfig Ground = new GroundConfig();
@@ -84,19 +53,9 @@ namespace AMG2D.Configuration
 
         public int NumberOfSegments;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool CheckCorrectness()
-        {
-            if (_isCorrectnessChecked) return _isCorrectnessChecked;
+        public int SegmentLoadingSpeed;
 
-            //check consistency
-            _isCorrectnessChecked = true;
-
-            return _isCorrectnessChecked;
-        }
+        public List<GameObject> ObjectsToEnable;
 
     }
 }

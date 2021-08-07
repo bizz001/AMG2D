@@ -3,6 +3,7 @@ using AMG2D.Model;
 using AMG2D.Model.Persistence;
 using AMG2D.Configuration;
 using UnityEngine;
+using System.Collections;
 
 namespace AMG2D.Implementation
 {
@@ -15,14 +16,14 @@ namespace AMG2D.Implementation
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
         }
 
-        void ITileEnhancer.PaintTiles(ref MapPersistence map)
+        public IEnumerator PaintTiles(MapPersistence map, IEnumerator continueWith = null)
         {
             throw new NotImplementedException();
         }
 
-        void ITileEnhancer.SetTilesCollider(ref MapPersistence map)
+        public IEnumerator SetTilesCollider(MapPersistence map, IEnumerator continueWith = null)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

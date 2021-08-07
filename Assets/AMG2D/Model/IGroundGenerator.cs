@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using AMG2D.Model.Persistence;
 
 namespace AMG2D.Model
@@ -10,6 +10,6 @@ namespace AMG2D.Model
         /// 
         /// </summary>
         /// <param name="test"></param>
-        public void CreateGround(ref MapPersistence map);
+        public IEnumerator CreateGround(MapPersistence map, IEnumerator continueWith = null);
     }
 }

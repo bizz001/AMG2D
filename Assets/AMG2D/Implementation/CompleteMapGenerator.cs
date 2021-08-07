@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using AMG2D.Configuration;
 using AMG2D.Model;
@@ -25,16 +26,16 @@ namespace AMG2D.Implementation
         /// 
         /// </summary>
         /// <param name="map"></param>
-        public void CreateCaves(ref MapPersistence map)
+        public IEnumerator CreateCaves(MapPersistence map, IEnumerator continueWith)
         {
-            return;
+            yield return continueWith;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="map"></param>
-        public void CreateGround(ref MapPersistence map)
+        public IEnumerator CreateGround(MapPersistence map, IEnumerator continueWith)
         {
             for (int x = 0; x < map.PersistedMap.Length; x++)
             {
@@ -53,9 +54,10 @@ namespace AMG2D.Implementation
                     }
                 }
             }
+            yield return continueWith;
         }
 
-        public void CreatePlatforms(ref MapPersistence map)
+        public IEnumerator CreatePlatforms(MapPersistence map, IEnumerator continueWith)
         {
             bool isTopReached = false;
             while (!isTopReached)
@@ -94,9 +96,10 @@ namespace AMG2D.Implementation
                 }
             }
             CreateBorder(ref map);
+            yield return continueWith;
         }
 
-        public void PositionExternalObjects(ref MapPersistence map)
+        public IEnumerator PositionExternalObjects(MapPersistence map, IEnumerator continueWith)
         {
             foreach (var configuredObject in _config.ExternalObjects.ExternalObjects)
             {
@@ -121,6 +124,7 @@ namespace AMG2D.Implementation
                         break;
                 }
             }
+            yield return continueWith;
         }
 
         private void PositionObjectInCave(ref MapPersistence map, ExternalObjectConfig objectToPlace)
@@ -153,7 +157,7 @@ namespace AMG2D.Implementation
                         placementCandidates.Add(map.PersistedMap[x][y + 1]);
                     }
                 }
-            }
+            } 
             foreach (var candidate in placementCandidates)
             {
                 if (GetRandomBool(objectToPlace.Density))

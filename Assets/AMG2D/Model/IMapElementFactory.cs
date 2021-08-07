@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using AMG2D.Model.Persistence;
 using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
@@ -8,10 +8,8 @@ namespace AMG2D.Model
 {
     public interface IMapElementFactory
     {
-        public bool ActivateTiles(TileInformation[][] tile);
-        public void ReleaseTiles(TileInformation[][] tile);
-        public bool ActivateExternalObjects(ref MapPersistence map);
-        public bool ReleaseExternalObject(ref MapPersistence map);
+        public IEnumerator ActivateExternalObjects(MapPersistence map, IEnumerator continueWith = null);
+        public IEnumerator ReleaseExternalObject(MapPersistence map, IEnumerator continueWith = null);
 
     }
 }
