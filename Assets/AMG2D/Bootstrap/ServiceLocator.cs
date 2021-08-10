@@ -6,7 +6,10 @@ using AMG2D.Configuration;
 using AMG2D.Implementation.Background;
 
 namespace AMG2D.Bootstrap
-{ 
+{
+    /// <summary>
+    /// Static class meant to provide dependency injection to to classes that cannot have custom constructors.
+    /// </summary>
     public static class ServiceLocator
     {
         private static Dictionary<Type, object> _services;
@@ -20,7 +23,7 @@ namespace AMG2D.Bootstrap
             if(mapConfig == null) throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
             _services = new Dictionary<Type, object>
             {
-                { typeof(IMapElementFactory), new PooledMultiPurposeFactory(mapConfig) },
+                { typeof(IMapElementFactory), new PooledMapElementFactory(mapConfig) },
                 { typeof(ITilesFactory), new TiledMapFactory(mapConfig) },
                 { typeof(ITileEnhancer), new BasicTileEnhancer(mapConfig) },
                 { typeof(ICaveGenerator), new CompleteMapGenerator(mapConfig) },
@@ -33,9 +36,10 @@ namespace AMG2D.Bootstrap
         }
 
         /// <summary>
-        /// 
+        /// Returns the impelentation of a service of a specific type.
         /// </summary>
-        /// <typeparam name="ServiceType"></typeparam>
+        /// <typeparam name="ServiceType">The type of the service to resolve.</typeparam>
+        /// <returns></returns>
         public static ServiceType GetService<ServiceType>()
         {
             if (!_isBuilt) throw new InvalidOperationException($"{nameof(ServiceLocator)} must be built before resolving services. please call {nameof(Build)} method.");

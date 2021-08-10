@@ -14,7 +14,7 @@ namespace AMG2D.Implementation
     /// <summary>
     /// 
     /// </summary>
-    public class PooledMultiPurposeFactory : IMapElementFactory, ITilesFactory
+    public class PooledMapFactory : ITilesFactory
     {
         private Dictionary<string, Queue<GameObject>> _pools;
         private Queue<GameObject> _segmentPool;
@@ -27,7 +27,7 @@ namespace AMG2D.Implementation
         /// 
         /// </summary>
         /// <param name="mapConfig"></param>
-        public PooledMultiPurposeFactory(GeneralMapConfig mapConfig)
+        public PooledMapFactory(GeneralMapConfig mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
             _segmentParents = new Dictionary<int, GameObject>();
@@ -36,11 +36,6 @@ namespace AMG2D.Implementation
             foreach (var seed in _config.ObjectSeeds)
             {
                 _pools.Add(seed.Key, new Queue<GameObject>());
-            }
-
-            foreach (var externalObject in _config.ExternalObjects.ExternalObjects)
-            {
-                _pools.Add(externalObject.UniqueID, new Queue<GameObject>());
             }
         }
 
@@ -157,21 +152,6 @@ namespace AMG2D.Implementation
                     }
                 }
             }
-            yield return continueWith;
-        }
-
-        public IEnumerator ActivateExternalObjects(MapPersistence map, IEnumerator continueWith)
-        {
-            if (_config.EnableSegmentation) yield break;
-            foreach (var obj in map.ExternalObjects)
-            {
-                obj.SpawnedObject = MonoBehaviour.Instantiate(obj.Template, new Vector2(obj.AsignedTile.X, obj.AsignedTile.Y), Quaternion.identity);
-            }
-            yield return continueWith;
-        }
-
-        public IEnumerator ReleaseExternalObject(MapPersistence map, IEnumerator continueWith)
-        {
             yield return continueWith;
         }
 

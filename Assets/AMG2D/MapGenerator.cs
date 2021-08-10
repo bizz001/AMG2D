@@ -47,13 +47,15 @@ namespace AMG2D
             _background.SetMapLimits(transform.position, Config.Height);
 
             IEnumerator startSequence =
+                StartCoroutineSequence(
                 _groundGenerator.CreateGround(_baseMap,
                 _platformGenerator.CreatePlatforms(_baseMap,
                 _externalObjectsPositioner.PositionExternalObjects(_baseMap,
                 _tilesFactory.ActivateTiles(_baseMap, this,
+                _elementFactory.ActivateExternalObjects(_baseMap,
                 EnableExternalObjects(
-                MarkCorutineFinished()
-                )))));
+                EndCoroutineSequence()
+                )))))));
             StartCoroutine(startSequence);
         }
 
@@ -66,21 +68,27 @@ namespace AMG2D
             yield return continueWith;
         }
 
-        private IEnumerator MarkCorutineFinished()
+        private IEnumerator EndCoroutineSequence()
         {
             courutineCompleted = true;
             yield break;
         }
 
+        private IEnumerator StartCoroutineSequence(IEnumerator continueWith)
+        {
+            courutineCompleted = false;
+            yield return continueWith;
+        }
+
         private void FixedUpdate()
         {
             if (!courutineCompleted) return;
-
+            courutineCompleted = false;
             IEnumerator updateSequence =
-                _externalObjectsPositioner.PositionExternalObjects(_baseMap,
+                StartCoroutineSequence(
                 _tilesFactory.ActivateTiles(_baseMap, this,
                 _elementFactory.ActivateExternalObjects(_baseMap,
-                MarkCorutineFinished()
+                EndCoroutineSequence()
                 )));
             StartCoroutine(updateSequence);
         }

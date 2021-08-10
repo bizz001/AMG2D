@@ -224,6 +224,5 @@ namespace AMG2D.Implementation
             var range = to - from;
             return (int)(from + range * _seededRandomGen.NextDouble());
         }
-
     }
 }

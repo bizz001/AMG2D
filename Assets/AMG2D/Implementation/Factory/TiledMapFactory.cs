@@ -15,8 +15,10 @@ namespace AMG2D.Implementation
     /// </summary>
     public class TiledMapFactory : ITilesFactory
     {
+        private const int HYSTERESIS = 1;
         private readonly GeneralMapConfig _config;
         private int _lastPlayerSegment;
+        private int _lastTransitionedSegment;
         private List<int> _lastActiveSegments;
         private Tilemap groundTilemap;
         private Tilemap platformTilemap;
@@ -106,6 +108,8 @@ namespace AMG2D.Implementation
                     platformTilemap.SetTiles(platformPositions, platformTilesToSet);
                 }
             }
+            yield return null;
+
             groundTilemap.gameObject.GetComponent<CompositeCollider2D>().GenerateGeometry();
             yield return null;
 
@@ -120,6 +124,10 @@ namespace AMG2D.Implementation
             {
                 var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
                 if (currentPlayerSegment == _lastPlayerSegment) yield break;
+
+                //Hysteresis to prevent erratic loading/unloading
+                if (currentPlayerSegment == _lastTransitionedSegment) yield break;
+
                 var tiles = map.PersistedMap;
                 //add current player segment and neighbouring segments
                 var activeSegments = new List<int>();
@@ -140,6 +148,7 @@ namespace AMG2D.Implementation
                 {
                     yield return ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
                 }
+                _lastTransitionedSegment = _lastPlayerSegment;
                 _lastPlayerSegment = currentPlayerSegment;
                 _lastActiveSegments = activeSegments;
             }
@@ -157,21 +166,23 @@ namespace AMG2D.Implementation
         {
             if (tiles != null && tiles.Any())
             {
-                Vector3Int[] positionsToRelease = new Vector3Int[tiles.Length * tiles.First().Length];
+                //Vector3Int[] positionsToRelease = new Vector3Int[tiles.Length * tiles.First().Length];
                 TileBase[] defaultTiles = new TileBase[tiles.Length * tiles.First().Length];
                 int releaseCounter = 0;
                 var width = tiles.Length;
                 var height = tiles.First().Length;
                 for (int x = 0; x < width; x++)
                 {
+                    Vector3Int[] positionsToRelease = new Vector3Int[tiles.Length * tiles.First().Length];
+
                     for (int y = 0; y < height; y++)
                     {
                         positionsToRelease[releaseCounter++] = new Vector3Int(tiles[x][y].X, tiles[x][y].Y, 0);
                     }
+                    groundTilemap.SetTiles(positionsToRelease, defaultTiles);
+                    platformTilemap.SetTiles(positionsToRelease, defaultTiles);
                     if (x % _config.SegmentLoadingSpeed == 0) yield return null;
                 }
-                groundTilemap.SetTiles(positionsToRelease, defaultTiles);
-                platformTilemap.SetTiles(positionsToRelease, defaultTiles);
             }
             yield return continueWith;
         }

@@ -25,10 +25,10 @@ namespace AMG2D.Implementation.Background
         }
 
         /// <summary>
-        /// 
+        /// Set the starting point and size of the map.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="height"></param>
+        /// <param name="position">Initial position</param>
+        /// <param name="height">Map height</param>
         public void SetMapLimits(Vector2 position, int height)
         {
             foreach (var layerConfig in _config.Background.BackgroundLayers)

@@ -1972,7 +1972,7 @@ MonoBehaviour:
       type: {class: GeneralMapConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
         Height: 30
-        Width: 500
+        Width: 10000
         GroundTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         PlatformTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         GenerationSeed: 1336
@@ -1986,9 +1986,10 @@ MonoBehaviour:
         ExternalObjects:
           id: 4
         Camera: {fileID: 519420028}
-        EnableSegmentation: 0
-        SegmentSize: 10
+        EnableSegmentation: 1
+        SegmentSize: 4
         NumberOfSegments: 15
+        SegmentLoadingSpeed: 2
         ObjectsToEnable:
         - {fileID: 2054118120}
     00000001:
@@ -2047,7 +2048,7 @@ MonoBehaviour:
         - UniqueID: bird
           ObjectTemplate: {fileID: 1973826515}
           Position: 1
-          Density: 1
+          Density: 9
         - UniqueID: mushroom
           ObjectTemplate: {fileID: 399905473}
           Position: 2
