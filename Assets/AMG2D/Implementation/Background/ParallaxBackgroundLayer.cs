@@ -16,7 +16,7 @@ namespace AMG2D.Implementation.Background
         private GameObject BackgroundPrefab { get; }
         private float _referenceXPosition;
         private float _width;
-        private readonly GeneralMapConfig _generalConfig;
+        private readonly CompleteConfiguration _generalConfig;
 
         /// <summary>
         /// Create a new instance of <see cref="ParallaxBackgroundLayer"/> using the provided configuration information.
@@ -25,10 +25,10 @@ namespace AMG2D.Implementation.Background
         /// <param name="position"></param>
         /// <param name="height"></param>
         /// <param name="sortOrder"></param>
-        internal ParallaxBackgroundLayer(BackgroundLayerConfig layerConfig, GeneralMapConfig GeneralConfig, Vector2 position, int height)
+        internal ParallaxBackgroundLayer(BackgroundLayerConfig layerConfig, CompleteConfiguration completeConfig, Vector2 position, int height)
         {
             _config = layerConfig ?? throw new ArgumentException($"Argument {nameof(layerConfig)} cannot be null.");
-            _generalConfig = GeneralConfig ?? throw new ArgumentException($"Argument {nameof(GeneralConfig)} cannot be null.");
+            _generalConfig = completeConfig ?? throw new ArgumentException($"Argument {nameof(completeConfig)} cannot be null.");
             _initalPosition = position;
             _height = height;
             BackgroundPrefab = CreateBackgroundLayerPrefeb(layerConfig);

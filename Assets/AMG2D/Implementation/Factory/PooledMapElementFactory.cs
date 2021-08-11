@@ -3,32 +3,27 @@ using System.Collections.Generic;
 using System.Collections;
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
-using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
 using AMG2D.Configuration;
-using AMG2D.Configuration.Enum;
 using System.Linq;
 
 namespace AMG2D.Implementation
 {
     /// <summary>
-    /// 
+    /// <see cref="IMapElementFactory"/> implementation that activates external objects using an object pool to improve resource usage.
     /// </summary>
     public class PooledMapElementFactory : IMapElementFactory
     {
-        private const int HYSTERESIS = 1;
-
         private Dictionary<string, Queue<GameObject>> _pools;
         private GeneralMapConfig _config;
         private int _lastPlayerSegment;
         private List<int> _lastActiveSegments;
-        private int _direction;
         private int _lastTransitionedSegment;
 
         /// <summary>
-        /// 
+        /// Creates an instance of <see cref="PooledMapElementFactory"/> using the provided configuration.
         /// </summary>
-        /// <param name="mapConfig"></param>
+        /// <param name="mapConfig">The configuration that will determine the behaviour of this instance.</param>
         public PooledMapElementFactory(GeneralMapConfig mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
@@ -44,14 +39,20 @@ namespace AMG2D.Implementation
             }
         }
 
-        public IEnumerator ActivateExternalObjects(MapPersistence map, IEnumerator continueWith)
+        /// <summary>
+        /// Coroutine that activates the external objects of the specified map.
+        /// </summary>
+        /// <param name="map">Map to activate external objects for.</param>
+        /// <param name="continueWith">Coroutine callback to execute after this call ends.</param>
+        /// <returns></returns>
+        public IEnumerator ActivateExternalObjects(MapPersistence map, IEnumerator continueWith = null)
         {
             if (_config.EnableSegmentation) yield return ActivateExternalObjectWithSegmentation(map.ExternalObjects);
             else yield return ActivateAllObjects(map.ExternalObjects);
             yield return continueWith;
         }
 
-        public IEnumerator ActivateExternalObjectWithSegmentation(List<ExternalObjectInfo> externalObjects)
+        private IEnumerator ActivateExternalObjectWithSegmentation(List<ExternalObjectInfo> externalObjects)
         {
 
              var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
@@ -68,6 +69,8 @@ namespace AMG2D.Implementation
                 activeSegments.Add(currentPlayerSegment - i);
                 activeSegments.Add(currentPlayerSegment + i);
             }
+
+            //If there are segments that become inactive first deactivate those objects in order to reuse them.
             if (_lastActiveSegments != null)
             {
                 yield return ReleaseExternalObject(externalObjects.Select(obj => obj)
@@ -79,6 +82,8 @@ namespace AMG2D.Implementation
             {
                 yield return ActivateAllObjects(externalObjects.Select(obj => obj).Where(obj => activeSegments.Contains(obj.AsignedTile.SegmentNumber)).ToList());
             }
+
+            //update info for next run
             _lastTransitionedSegment = _lastPlayerSegment;
             _lastPlayerSegment = currentPlayerSegment;
             _lastActiveSegments = activeSegments;
@@ -103,6 +108,12 @@ namespace AMG2D.Implementation
             yield break;
         }
 
+        /// <summary>
+        /// Coroutine that deactivates the specified List of external objects.
+        /// </summary>
+        /// <param name="map">Objects to deactivate.</param>
+        /// <param name="continueWith">Coroutine callback to execute after this call ends.</param>
+        /// <returns></returns>
         public IEnumerator ReleaseExternalObject(List<ExternalObjectInfo> externalObjects, IEnumerator continueWith = null)
         {
             foreach (var obj in externalObjects)

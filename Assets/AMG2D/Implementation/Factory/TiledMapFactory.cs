@@ -15,7 +15,6 @@ namespace AMG2D.Implementation
     /// </summary>
     public class TiledMapFactory : ITilesFactory
     {
-        private const int HYSTERESIS = 1;
         private readonly GeneralMapConfig _config;
         private int _lastPlayerSegment;
         private int _lastTransitionedSegment;
@@ -166,7 +165,6 @@ namespace AMG2D.Implementation
         {
             if (tiles != null && tiles.Any())
             {
-                //Vector3Int[] positionsToRelease = new Vector3Int[tiles.Length * tiles.First().Length];
                 TileBase[] defaultTiles = new TileBase[tiles.Length * tiles.First().Length];
                 int releaseCounter = 0;
                 var width = tiles.Length;

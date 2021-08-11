@@ -4,7 +4,7 @@ using UnityEngine;
 namespace AMG2D.Configuration
 {
     /// <summary>
-    /// Class holding information regarding background configuration.
+    /// Class that holds information regarding background configuration.
     /// </summary>
     [Serializable]
     public class BackgroundConfig
@@ -17,7 +17,8 @@ namespace AMG2D.Configuration
         public float VerticalParallaxModifier = 1;
 
         /// <summary>
-        /// Height of the horizon as a 
+        /// Height of the horizon as a proportion of the total height.
+        /// <see cref="0.5f"/> will set the horizon in the middle of the map height.
         /// </summary>
         public float HorizonHeight = 0.5f;
 
