@@ -15,7 +15,6 @@ namespace AMG2D
         [SerializeField] GameObject dirt, grass, stone;
 
         private IMapElementFactory _elementFactory;
-        private ITileEnhancer _tileEnhancer;
         private IGroundGenerator _groundGenerator;
         private IPlatformGenerator _platformGenerator;
         private ITilesFactory _tilesFactory;
@@ -27,24 +26,29 @@ namespace AMG2D
         private MapPersistence _baseMap;
 
         [SerializeReference]
-        public GeneralMapConfig Config;
+        public CompleteConfiguration Configuration = new CompleteConfiguration();
+
         private bool _initializationCoroutineFinished;
 
         void Start()
         {
-            _baseMap = new MapPersistence(Config.Width, Config.Height, Config.SegmentSize);
-            if (Config == null) Config = new GeneralMapConfig();
+            _baseMap = new MapPersistence(
+                Configuration.GeneralMapSettings.Width,
+                Configuration.GeneralMapSettings.Height,
+                Configuration.GeneralMapSettings.SegmentSize
+                );
+
             var seeds = new Dictionary<string, GameObject>()
             {
                 { EGameObjectType.GroundTile.ToString(), dirt },
                 { EGameObjectType.GrassTile.ToString(), grass },
                 { EGameObjectType.StoneTile.ToString(), stone }
             };
-            Config.ObjectSeeds = seeds;
-            ServiceLocator.Build(Config);
+            Configuration.GeneralMapSettings.ObjectSeeds = seeds;
+            ServiceLocator.Build(Configuration);
             ResolveServices();
 
-            _background.SetMapLimits(transform.position, Config.Height);
+            _background.SetMapLimits(transform.position, Configuration.GeneralMapSettings.Height);
 
             IEnumerator startSequence =
                 StartCoroutineSequence(
@@ -61,7 +65,7 @@ namespace AMG2D
 
         private IEnumerator EnableExternalObjects(IEnumerator continueWith)
         {
-            foreach (var obj in Config.ObjectsToEnable)
+            foreach (var obj in Configuration.GeneralMapSettings.ObjectsToEnable)
             {
                 obj.SetActive(true);
             }
@@ -107,8 +111,6 @@ namespace AMG2D
                     ?? throw new ArgumentNullException($"Service {nameof(IMapElementFactory)} cannot be null");
                 _tilesFactory = ServiceLocator.GetService<ITilesFactory>()
                     ?? throw new ArgumentNullException($"Service {nameof(ITilesFactory)} cannot be null");
-                _tileEnhancer = ServiceLocator.GetService<ITileEnhancer>()
-                    ?? throw new ArgumentNullException($"Service {nameof(ITileEnhancer)} cannot be null");
                 _groundGenerator = ServiceLocator.GetService<IGroundGenerator>()
                     ?? throw new ArgumentNullException($"Service {nameof(IGroundGenerator)} cannot be null");
                 _caveGenerator = ServiceLocator.GetService<ICaveGenerator>()

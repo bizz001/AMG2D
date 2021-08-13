@@ -52,8 +52,8 @@ namespace AMG2D.Model.Persistence
         /// <summary>
         /// Constructs a TileInformation instance at a specified (x, y) position.
         /// </summary>
-        /// <param name="x">X component of tile position.</param>
-        /// <param name="y">Y component of tile position.</param>
+        /// <param name="x">position on the X axis.</param>
+        /// <param name="y">position on the Y axis.</param>
         public TileInformation(int x, int y)
         {
             X = x;
@@ -63,9 +63,9 @@ namespace AMG2D.Model.Persistence
         /// <summary>
         /// Constructs a TileInformation instance at a specified (x, y) position and with the specified segmentNumber.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="segmentNumber"></param>
+        /// <param name="x">position on the X axis.</param>
+        /// <param name="y">position on the Y axis.</param>
+        /// <param name="segmentNumber">asigned segment number.</param>
         public TileInformation(int x, int y, int segmentNumber) : this(x, y)
         {
             SegmentNumber = segmentNumber;

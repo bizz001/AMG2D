@@ -45,7 +45,7 @@ namespace AMG2D.Configuration
         public int GenerationSeed;
 
         /// <summary>
-        /// 
+        /// Object seeds for the type specified by the key of the <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         public Dictionary<string, GameObject> ObjectSeeds;
 

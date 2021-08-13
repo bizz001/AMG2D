@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Follow: {fileID: 851454778}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 6
+    OrthographicSize: 25
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -1316,7 +1316,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1964,95 +1964,89 @@ MonoBehaviour:
   dirt: {fileID: 752059146}
   grass: {fileID: 672421516}
   stone: {fileID: 139352317}
-  Config:
+  Configuration:
     id: 0
   references:
     version: 1
     00000000:
+      type: {class: CompleteConfiguration, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
+      data:
+        GeneralMapSettings:
+          id: 1
+        Background:
+          id: 2
+        Ground:
+          id: 3
+        Platforms:
+          id: 4
+        ExternalObjects:
+          id: 5
+    00000001:
       type: {class: GeneralMapConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        Height: 30
-        Width: 10000
+        Height: 70
+        Width: 5000
+        MapBorderThickness: 0
         GroundTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         PlatformTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
-        GenerationSeed: 1336
-        MapBorderThickness: 1
-        Background:
-          id: 1
-        Ground:
-          id: 2
-        Platforms:
-          id: 3
-        ExternalObjects:
-          id: 4
+        GenerationSeed: 1337
         Camera: {fileID: 519420028}
         EnableSegmentation: 1
-        SegmentSize: 4
+        SegmentSize: 5
         NumberOfSegments: 15
-        SegmentLoadingSpeed: 2
+        SegmentLoadingSpeed: 1
         ObjectsToEnable:
         - {fileID: 2054118120}
-    00000001:
+    00000002:
       type: {class: BackgroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
         VerticalParallaxModifier: 1
-        HorizonHeight: 0.6
-        MapPadding: 10
+        HorizonHeight: 0.5
+        MapPadding: 0
         BackgroundLayers:
         - BaseImage: {fileID: 611539253}
           ParallaxIntensity: 0
-          Repetition: 4
+          Repetition: 3
         - BaseImage: {fileID: 1005721740}
-          ParallaxIntensity: 0.1
-          Repetition: 4
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 916020245}
-          ParallaxIntensity: 0.3
-          Repetition: 4
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 1268330385}
-          ParallaxIntensity: 0.5
-          Repetition: 4
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 1929290735}
-          ParallaxIntensity: 0.85
-          Repetition: 4
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 263994818}
-          ParallaxIntensity: 0.9
-          Repetition: 4
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 500155387}
-          ParallaxIntensity: 0.98
-          Repetition: 1
+          ParallaxIntensity: 0
+          Repetition: 3
         - BaseImage: {fileID: 1603297803}
           ParallaxIntensity: 1
           Repetition: 3
-    00000002:
+    00000003:
       type: {class: GroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        InitialHeight: 15
-        Smoothness: 57
-    00000003:
+        InitialHeight: 40
+        Smoothness: 72
+    00000004:
       type: {class: PlatformsConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        MaximumHeight: 3
-        MinimumHeight: 2
-        Thickness: 1
-        Density: 100
-        MinWidth: 5
-        MaxWidth: 15
-    00000004:
+        EnablePlatformsGeneration: 0
+        MaximumHeight: 0
+        MinimumHeight: 0
+        Thickness: 0
+        Density: 0
+        MinWidth: 0
+        MaxWidth: 0
+    00000005:
       type: {class: ExternalObjectsConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        ExternalObjects:
-        - UniqueID: skull
-          ObjectTemplate: {fileID: 15513227}
-          Position: 3
-          Density: 5
-        - UniqueID: bird
-          ObjectTemplate: {fileID: 1973826515}
-          Position: 1
-          Density: 9
-        - UniqueID: mushroom
-          ObjectTemplate: {fileID: 399905473}
-          Position: 2
-          Density: 10
+        ExternalObjects: []
 --- !u!4 &971624180
 Transform:
   m_ObjectHideFlags: 0

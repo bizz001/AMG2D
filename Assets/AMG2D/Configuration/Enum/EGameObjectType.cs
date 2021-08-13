@@ -35,6 +35,9 @@ namespace AMG2D.Configuration.Enum
         /// </summary>
         CaveTile,
 
+        /// <summary>
+        /// Represents an external object type.
+        /// </summary>
         ExternalObject
     }
 }

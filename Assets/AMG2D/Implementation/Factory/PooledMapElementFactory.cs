@@ -15,20 +15,22 @@ namespace AMG2D.Implementation
     public class PooledMapElementFactory : IMapElementFactory
     {
         private Dictionary<string, Queue<GameObject>> _pools;
-        private GeneralMapConfig _config;
+        private CompleteConfiguration _config;
         private int _lastPlayerSegment;
         private List<int> _lastActiveSegments;
         private int _lastTransitionedSegment;
+        private GeneralMapConfig _generalSettings;
 
         /// <summary>
         /// Creates an instance of <see cref="PooledMapElementFactory"/> using the provided configuration.
         /// </summary>
         /// <param name="mapConfig">The configuration that will determine the behaviour of this instance.</param>
-        public PooledMapElementFactory(GeneralMapConfig mapConfig)
+        public PooledMapElementFactory(CompleteConfiguration mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
+            _generalSettings = _config.GeneralMapSettings;
             _pools = new Dictionary<string, Queue<GameObject>>();
-            foreach (var seed in _config.ObjectSeeds)
+            foreach (var seed in _generalSettings.ObjectSeeds)
             {
                 _pools.Add(seed.Key, new Queue<GameObject>());
             }
@@ -40,14 +42,14 @@ namespace AMG2D.Implementation
         }
 
         /// <summary>
-        /// Coroutine that activates the external objects of the specified map.
+        /// Coroutine that activates the external objects of the specified map and then executes the callback coroutine.
         /// </summary>
         /// <param name="map">Map to activate external objects for.</param>
         /// <param name="continueWith">Coroutine callback to execute after this call ends.</param>
         /// <returns></returns>
         public IEnumerator ActivateExternalObjects(MapPersistence map, IEnumerator continueWith = null)
         {
-            if (_config.EnableSegmentation) yield return ActivateExternalObjectWithSegmentation(map.ExternalObjects);
+            if (_generalSettings.EnableSegmentation) yield return ActivateExternalObjectWithSegmentation(map.ExternalObjects);
             else yield return ActivateAllObjects(map.ExternalObjects);
             yield return continueWith;
         }
@@ -55,7 +57,7 @@ namespace AMG2D.Implementation
         private IEnumerator ActivateExternalObjectWithSegmentation(List<ExternalObjectInfo> externalObjects)
         {
 
-             var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
+             var currentPlayerSegment = (int)(_generalSettings.Camera.transform.position.x / _generalSettings.SegmentSize) + 1;
             if (currentPlayerSegment == _lastPlayerSegment) yield break;
 
             //Hysteresis to prevent erratic loading/unloading
@@ -64,7 +66,7 @@ namespace AMG2D.Implementation
             //add current player segment and neighbouring segments
             var activeSegments = new List<int>();
             activeSegments.Add(currentPlayerSegment);
-            for (int i = 1; i <= (_config.NumberOfSegments - 1) / 2; i++)
+            for (int i = 1; i <= (_generalSettings.NumberOfSegments - 1) / 2; i++)
             {
                 activeSegments.Add(currentPlayerSegment - i);
                 activeSegments.Add(currentPlayerSegment + i);

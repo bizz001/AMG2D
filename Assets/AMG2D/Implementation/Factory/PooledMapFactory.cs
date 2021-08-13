@@ -12,7 +12,7 @@ using System.Linq;
 namespace AMG2D.Implementation
 {
     /// <summary>
-    /// 
+    /// <see cref="ITilesFactory"/> implementation that creates the map out of pooled objects of <see cref="GameObject"/> type.
     /// </summary>
     public class PooledMapFactory : ITilesFactory
     {
@@ -24,9 +24,9 @@ namespace AMG2D.Implementation
         private List<int> _lastActiveSegments;
 
         /// <summary>
-        /// 
+        /// Creates an instance of <see cref="PooledMapFactory"/> using the provided configuration.
         /// </summary>
-        /// <param name="mapConfig"></param>
+        /// <param name="mapConfig">configuration object that will determine the behaviour of this instance.</param>
         public PooledMapFactory(GeneralMapConfig mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
@@ -40,18 +40,20 @@ namespace AMG2D.Implementation
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that activates the Tiles objects of the specified map and then executes the callback coroutine.
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="tiles"></param>
+        /// <param name="map">map to activate.</param>
+        /// <param name="parent">parent object of the map.</param>
+        /// <param name="continueWith">callback to execute when done.</param>
+        /// <returns></returns>
         public IEnumerator ActivateTiles(MapPersistence map, MonoBehaviour parent, IEnumerator continueWith)
         {
-            if (_config.EnableSegmentation) yield return ActivateSegmentedTiles(map);
-            else if (!map.PersistedMap.First().First().IsActive) yield return ActivateAllTiles(map.PersistedMap);
+            if (_config.EnableSegmentation) yield return ActivateSegmentedTiles(map, parent);
+            else if (!map.PersistedMap.First().First().IsActive) yield return ActivateAllTiles(map.PersistedMap, parent);
             yield return continueWith;
         }
 
-        private IEnumerator ActivateAllTiles(TileInformation[][] tiles)
+        private IEnumerator ActivateAllTiles(TileInformation[][] tiles, MonoBehaviour parent)
         {
             if (tiles == null) yield break;
             HashSet<int> activatedSegments = new HashSet<int>();
@@ -73,23 +75,24 @@ namespace AMG2D.Implementation
                         tile.CurrentPrefab = MonoBehaviour.Instantiate(_config.ObjectSeeds[currentTileType.ToString()], new Vector2(tile.X, tile.Y), Quaternion.identity);
                         tile.CurrentPrefab.SetActive(true);
                     }
-                    if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject parent)) //search active segments first
+                    if (!_segmentParents.TryGetValue(tile.SegmentNumber, out GameObject segment)) //search active segments first
                     {
                         if(_segmentPool.Count == 0) //try pool second
                         {
-                            parent = new GameObject();
-                            var collider = parent.AddComponent<CompositeCollider2D>();
+                            segment = new GameObject();
+                            segment.transform.SetParent(parent.transform);
+                            var collider = segment.AddComponent<CompositeCollider2D>();
                             collider.generationType = CompositeCollider2D.GenerationType.Manual;
-                            parent.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                            segment.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
                         }
                         else
                         {
-                            parent = _segmentPool.Dequeue();
+                            segment = _segmentPool.Dequeue();
                         }
-                        parent.name = $"MapSegment{tile.SegmentNumber}";
-                        _segmentParents.Add(tile.SegmentNumber, parent);
+                        segment.name = $"MapSegment{tile.SegmentNumber}";
+                        _segmentParents.Add(tile.SegmentNumber, segment);
                     }
-                    tile.CurrentPrefab.transform.SetParent(parent.transform);
+                    tile.CurrentPrefab.transform.SetParent(segment.transform);
                 }
             }
             //_doLater = () =>
@@ -101,7 +104,7 @@ namespace AMG2D.Implementation
             //};
         }
 
-        private IEnumerator ActivateSegmentedTiles(MapPersistence map)
+        private IEnumerator ActivateSegmentedTiles(MapPersistence map, MonoBehaviour parent)
         {
             var currentPlayerSegment = (int)(_config.Camera.transform.position.x / _config.SegmentSize) + 1;
             if (currentPlayerSegment == _lastPlayerSegment) yield break;
@@ -119,11 +122,11 @@ namespace AMG2D.Implementation
                 yield return ReleaseTiles(tiles.Select(tileLine => tileLine)
                     .Where(tileLine => _lastActiveSegments.Contains(tileLine.First().SegmentNumber) && !activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
                 yield return ActivateAllTiles(tiles.Select(tileLine => tileLine)
-                    .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
+                    .Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber) && !_lastActiveSegments.Contains(tileLine.First().SegmentNumber)).ToArray(), parent);
             }
             else
             {
-                ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray());
+                ActivateAllTiles(tiles.Select(tileLine => tileLine).Where(tileLine => activeSegments.Contains(tileLine.First().SegmentNumber)).ToArray(), parent);
             }
             _lastPlayerSegment = currentPlayerSegment;
             _lastActiveSegments = activeSegments;
@@ -131,9 +134,11 @@ namespace AMG2D.Implementation
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that releases the specified tiles and then continues execution with the provided callback coroutine.
         /// </summary>
-        /// <param name="tiles"></param>
+        /// <param name="tiles">tiles to release.</param>
+        /// <param name="continueWith">callback to execute when done.</param>
+        /// <returns></returns>
         public IEnumerator ReleaseTiles(TileInformation[][] tiles, IEnumerator continueWith = null)
         {
             foreach (var tilesLine in tiles)

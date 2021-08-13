@@ -11,35 +11,49 @@ using Random = System.Random;
 
 namespace AMG2D.Implementation
 {
+    /// <summary>
+    /// Service class that implements all interfaces that alter the persisted map, adding or modifying different elements.
+    /// </summary>
     public class CompleteMapGenerator : ICaveGenerator, IGroundGenerator, IPlatformGenerator, IExternalObjectsPositioner
     {
-        private GeneralMapConfig _config;
+        private CompleteConfiguration _config;
         private Random _seededRandomGen;
 
-        public CompleteMapGenerator(GeneralMapConfig mapConfig)
+        /// <summary>
+        /// Create an instance of <see cref="CompleteMapGenerator"/> using the provided configuration
+        /// </summary>
+        /// <param name="config"></param>
+        public CompleteMapGenerator(CompleteConfiguration config)
         {
-            _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
-            _seededRandomGen = new Random(_config.GenerationSeed);
+            _config = config ?? throw new ArgumentNullException($"Argument {nameof(config)} cannot be null");
+            _seededRandomGen = new Random(_config.GeneralMapSettings.GenerationSeed);
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that mdifies the provided <see cref="MapPersistence"/> in order to add caves according to the configuration injected at creation.
+        /// Executes provided coroutine at the end.
+        /// WARNING: NOT IMPLEMENTED.
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="map">map to modify.</param>
+        /// <param name="continueWith">coroutine to execute at the end.</param>
+        /// <returns></returns>
         public IEnumerator CreateCaves(MapPersistence map, IEnumerator continueWith)
         {
             yield return continueWith;
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that modifies the provided <see cref="MapPersistence"/> in order to add ground according to the configuration injected at creation.
+        /// Executes provided coroutine at the end.
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="map">map to modify.</param>
+        /// <param name="continueWith">coroutine to execute at the end.</param>
+        /// <returns></returns>
         public IEnumerator CreateGround(MapPersistence map, IEnumerator continueWith)
         {
             for (int x = 0; x < map.PersistedMap.Length; x++)
             {
-                var noise = Mathf.PerlinNoise(x / _config.Ground.Smoothness, _config.GenerationSeed);
+                var noise = Mathf.PerlinNoise(x / _config.Ground.Smoothness, _config.GeneralMapSettings.GenerationSeed);
                 var terrainHeight = Mathf.RoundToInt(_config.Ground.InitialHeight * noise);
                 foreach (var tile in map.PersistedMap[x])
                 {
@@ -57,48 +71,64 @@ namespace AMG2D.Implementation
             yield return continueWith;
         }
 
+        /// <summary>
+        /// Modifies the provided <see cref="MapPersistence"/> in order to add ground according to the configuration injected at creation.
+        /// Executes provided callback coroutine at the end.
+        /// </summary>
+        /// <param name="map">map to modify.</param>
+        /// <param name="continueWith">coroutine to execute at the end.</param>
+        /// <returns></returns>
         public IEnumerator CreatePlatforms(MapPersistence map, IEnumerator continueWith)
         {
-            bool isTopReached = false;
-            while (!isTopReached)
+            if (_config.Platforms.EnablePlatformsGeneration && _config.Platforms.Density != 0)
             {
-                int currentX = 0;
-                while (currentX < map.PersistedMap.Length)
+                bool isTopReached = false;
+                while (!isTopReached)
                 {
-                    if (GetRandomBool(_config.Platforms.Density / 100))
+                    int currentX = 0;
+                    while (currentX < map.PersistedMap.Length)
                     {
-                        var platformWidth = GetRandomFromRange(_config.Platforms.MinWidth, _config.Platforms.MaxWidth);
-                        var platformHeight = GetRandomFromRange(_config.Platforms.MinimumHeight, _config.Platforms.MaximumHeight);
+                        if (GetRandomBool(_config.Platforms.Density / 100))
+                        {
+                            var platformWidth = GetRandomFromRange(_config.Platforms.MinWidth, _config.Platforms.MaxWidth);
+                            var platformHeight = GetRandomFromRange(_config.Platforms.MinimumHeight, _config.Platforms.MaximumHeight);
 
-                        var platformWidthArea = map.PersistedMap.Skip(currentX - 1).Take(platformWidth + 2);
-                        var maximumGroundHeight = platformWidthArea.Max(column => column.Where(tile => tile.TileType == ETileType.Grass).Max(tile => tile.Y));
-                        var topPlatformTile = maximumGroundHeight + _config.Platforms.Thickness + platformHeight;
-                        var bottomPlatformTile = topPlatformTile - _config.Platforms.Thickness;
-                        platformWidthArea.Skip(1).Take(platformWidth);
-                        if (topPlatformTile < _config.Height - _config.MapBorderThickness)
-                        {
-                            foreach (var column in platformWidthArea)
+                            var platformWidthArea = map.PersistedMap.Skip(currentX - 1).Take(platformWidth + 2);
+                            var maximumGroundHeight = platformWidthArea.Max(column => column.Where(tile => tile.TileType == ETileType.Grass).Max(tile => tile.Y));
+                            var topPlatformTile = maximumGroundHeight + _config.Platforms.Thickness + platformHeight;
+                            var bottomPlatformTile = topPlatformTile - _config.Platforms.Thickness;
+                            platformWidthArea.Skip(1).Take(platformWidth);
+                            if (topPlatformTile < _config.GeneralMapSettings.Height - _config.GeneralMapSettings.MapBorderThickness)
                             {
-                                foreach (var tile in column)
+                                foreach (var column in platformWidthArea)
                                 {
-                                    if (tile.Y == topPlatformTile) tile.TileType = ETileType.Grass;
-                                    if (tile.Y < topPlatformTile && tile.Y > bottomPlatformTile) tile.TileType = ETileType.Ground;
+                                    foreach (var tile in column)
+                                    {
+                                        if (tile.Y == topPlatformTile) tile.TileType = ETileType.Grass;
+                                        if (tile.Y < topPlatformTile && tile.Y > bottomPlatformTile) tile.TileType = ETileType.Ground;
+                                    }
                                 }
+                                currentX += platformWidth;
                             }
-                            currentX += platformWidth;
+                            else
+                            {
+                                isTopReached = true;
+                            }
                         }
-                        else
-                        {
-                            isTopReached = true;
-                        }
+                        currentX++;
                     }
-                    currentX++;
                 }
             }
             CreateBorder(ref map);
             yield return continueWith;
         }
 
+        /// <summary>
+        /// Coroutine that modifies the provided <see cref="MapPersistence"/> in order to add external objects according to the configuration injected at creation.
+        /// </summary>
+        /// <param name="map">map to modify.</param>
+        /// <param name="continueWith">coroutine to execute at the end.</param>
+        /// <returns></returns>
         public IEnumerator PositionExternalObjects(MapPersistence map, IEnumerator continueWith)
         {
             foreach (var configuredObject in _config.ExternalObjects.ExternalObjects)
@@ -189,13 +219,13 @@ namespace AMG2D.Implementation
 
         private void CreateBorder(ref MapPersistence map)
         {
-            if (_config.MapBorderThickness == 0) return;
-            for (int y = 0; y < _config.MapBorderThickness; y++)
+            if (_config.GeneralMapSettings.MapBorderThickness == 0) return;
+            for (int y = 0; y < _config.GeneralMapSettings.MapBorderThickness; y++)
             {
                 for (int x = 0; x < map.PersistedMap.Length; x++)
                 {
                     map.PersistedMap[x][y].TileType = ETileType.Stone;
-                    map.PersistedMap[x][_config.Height - 1 - y].TileType = ETileType.Stone;
+                    map.PersistedMap[x][_config.GeneralMapSettings.Height - 1 - y].TileType = ETileType.Stone;
                 }
                 foreach (var item in map.PersistedMap[y])
                 {

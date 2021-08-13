@@ -11,7 +11,7 @@ namespace AMG2D.Implementation.Background
     /// </summary>
     public class ParallaxBackgroundService : IBackgroundService
     {
-        private readonly GeneralMapConfig _config;
+        private readonly CompleteConfiguration _config;
         private readonly List<ParallaxBackgroundLayer> _layers = new List<ParallaxBackgroundLayer>();
         private bool _mapLimitsSet = false;
 
@@ -19,7 +19,7 @@ namespace AMG2D.Implementation.Background
         /// Creats a new instance of <see cref="ParallaxBackgroundService"/> using the provided configuration.
         /// </summary>
         /// <param name="mapConfig">General </param>
-        public ParallaxBackgroundService(GeneralMapConfig mapConfig)
+        public ParallaxBackgroundService(CompleteConfiguration mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
         }

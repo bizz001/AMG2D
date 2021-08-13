@@ -4,12 +4,17 @@ using UnityEngine;
 namespace AMG2D.Configuration
 {
     /// <summary>
-    /// Class that holds information regarding cave creating configuration.
-    /// Currently empty as it is not yet implemented.
+    /// 
     /// </summary>
     [Serializable]
     public class CompleteConfiguration
     {
+        /// <summary>
+        /// Current <see cref="ExternalObjectsConfig"/> instanace.
+        /// </summary>
+        [SerializeReference]
+        public GeneralMapConfig GeneralMapSettings = new GeneralMapConfig();
+
         /// <summary>
         /// Current <see cref="BackgroundConfig"/> instanace.
         /// </summary>

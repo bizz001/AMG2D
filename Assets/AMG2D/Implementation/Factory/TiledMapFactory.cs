@@ -11,7 +11,7 @@ using UnityEngine.Tilemaps;
 namespace AMG2D.Implementation
 {
     /// <summary>
-    /// 
+    /// <see cref="ITilesFactory"/> implementation that creates a map based on <see cref="Tilemap"/> objects.
     /// </summary>
     public class TiledMapFactory : ITilesFactory
     {
@@ -24,9 +24,9 @@ namespace AMG2D.Implementation
         private bool _isRunning;
 
         /// <summary>
-        /// 
+        /// Creates an instance of <see cref="TiledMapFactory"/> using the provided configuration.
         /// </summary>
-        /// <param name="mapConfig"></param>
+        /// <param name="mapConfig">configuration for this instance.</param>
         public TiledMapFactory(GeneralMapConfig mapConfig)
         {
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
@@ -45,13 +45,14 @@ namespace AMG2D.Implementation
             platformTilemap.gameObject.AddComponent<CompositeCollider2D>().generationType = CompositeCollider2D.GenerationType.Manual;
             platformTilemap.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
             platformTilemap.transform.SetParent(grid.transform);
-
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that activates the Tiles objects of the specified map and then executes the callback coroutine.
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="map">map to activate.</param>
+        /// <param name="parent">parent object of the map.</param>
+        /// <param name="continueWith">callback to execute when done.</param>
         /// <returns></returns>
         public IEnumerator ActivateTiles(MapPersistence map, MonoBehaviour parent, IEnumerator continueWith)
         {
@@ -63,6 +64,7 @@ namespace AMG2D.Implementation
             }
             yield return continueWith;
         }
+
         private IEnumerator ActivateAllTiles(TileInformation[][] tiles)
         {
             if (tiles == null || !tiles.Any()) yield break;
@@ -108,12 +110,9 @@ namespace AMG2D.Implementation
                 }
             }
             yield return null;
-
             groundTilemap.gameObject.GetComponent<CompositeCollider2D>().GenerateGeometry();
             yield return null;
-
             platformTilemap.gameObject.GetComponent<CompositeCollider2D>().GenerateGeometry();
-
             yield break;
         }
 
@@ -158,9 +157,11 @@ namespace AMG2D.Implementation
         }
 
         /// <summary>
-        /// 
+        /// Coroutine that releases the specified tiles and then continues execution with the provided callback coroutine.
         /// </summary>
-        /// <param name="tiles"></param>
+        /// <param name="tiles">tiles to release.</param>
+        /// <param name="continueWith">callback to execute when done.</param>
+        /// <returns></returns>
         public IEnumerator ReleaseTiles(TileInformation[][] tiles, IEnumerator continueWith = null)
         {
             if (tiles != null && tiles.Any())

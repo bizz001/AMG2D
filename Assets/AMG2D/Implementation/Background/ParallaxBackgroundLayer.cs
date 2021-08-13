@@ -50,7 +50,7 @@ namespace AMG2D.Implementation.Background
             var finalPrefab = new GameObject();
             if (config.ParallaxIntensity >= 0.5f)
             {
-                finalPrefab.transform.SetParent(_generalConfig.Camera.transform);
+                finalPrefab.transform.SetParent(_generalConfig.GeneralMapSettings.Camera.transform);
             }
             finalPrefab.transform.position = config.BaseImage.transform.position;
             config.BaseImage.transform.SetParent(finalPrefab.transform);
@@ -92,17 +92,16 @@ namespace AMG2D.Implementation.Background
         /// <summary>
         /// Update the position of this background layer based on the new camera position.
         /// </summary>
-        /// <param name="newCameraPosition">New camera poisition</param>
         public void UpdatePosition()
         {
             //X Axis parallax
-            var newCameraXPosition = _generalConfig.Camera.transform.position.x;
+            var newCameraXPosition = _generalConfig.GeneralMapSettings.Camera.transform.position.x;
             float newXPosition = _referenceXPosition + (newCameraXPosition - _referenceXPosition) * _config.ParallaxIntensity;
             float newXOffset = newCameraXPosition - newXPosition;
 
             //Y Axis parallax
             var mapCenter = _initalPosition.y + (_height / 2);
-            var newCameraYPosition = _generalConfig.Camera.transform.position.y;
+            var newCameraYPosition = _generalConfig.GeneralMapSettings.Camera.transform.position.y;
             float newYPosition = mapCenter + (newCameraYPosition - _initalPosition.y - (_generalConfig.Background.HorizonHeight * _height)) * _config.ParallaxIntensity * _generalConfig.Background.VerticalParallaxModifier;
 
             var targetPos = new Vector2(newXPosition, newYPosition);

@@ -18,25 +18,24 @@ namespace AMG2D.Bootstrap
         /// <summary>
         /// Prepares internal state of class for resolving services.
         /// </summary>
-        public static void Build(GeneralMapConfig mapConfig)
+        public static void Build(CompleteConfiguration completeConfig)
         {
-            if(mapConfig == null) throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
+            if(completeConfig == null) throw new ArgumentNullException($"Argument {nameof(completeConfig)} cannot be null");
             _services = new Dictionary<Type, object>
             {
-                { typeof(IMapElementFactory), new PooledMapElementFactory(mapConfig) },
-                { typeof(ITilesFactory), new TiledMapFactory(mapConfig) },
-                { typeof(ITileEnhancer), new BasicTileEnhancer(mapConfig) },
-                { typeof(ICaveGenerator), new CompleteMapGenerator(mapConfig) },
-                { typeof(IPlatformGenerator), new CompleteMapGenerator(mapConfig) },
-                { typeof(IGroundGenerator), new CompleteMapGenerator(mapConfig) },
-                { typeof(IExternalObjectsPositioner), new CompleteMapGenerator(mapConfig) },
-                { typeof(IBackgroundService), new ParallaxBackgroundService(mapConfig) }
+                { typeof(IMapElementFactory), new PooledMapElementFactory(completeConfig) },
+                { typeof(ITilesFactory), new TiledMapFactory(completeConfig.GeneralMapSettings) },
+                { typeof(ICaveGenerator), new CompleteMapGenerator(completeConfig) },
+                { typeof(IPlatformGenerator), new CompleteMapGenerator(completeConfig) },
+                { typeof(IGroundGenerator), new CompleteMapGenerator(completeConfig) },
+                { typeof(IExternalObjectsPositioner), new CompleteMapGenerator(completeConfig) },
+                { typeof(IBackgroundService), new ParallaxBackgroundService(completeConfig) }
             };
             _isBuilt = true;
         }
 
         /// <summary>
-        /// Returns the impelentation of a service of a specific type.
+        /// Returns the impelentation for a service of a specific type.
         /// </summary>
         /// <typeparam name="ServiceType">The type of the service to resolve.</typeparam>
         /// <returns></returns>

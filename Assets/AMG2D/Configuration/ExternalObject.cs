@@ -16,7 +16,7 @@ namespace AMG2D.Configuration
         public string UniqueID;
 
         /// <summary>
-        /// Objects template that will be cloned.
+        /// Object template that will be cloned.
         /// </summary>
         public GameObject ObjectTemplate;
 
@@ -29,6 +29,5 @@ namespace AMG2D.Configuration
         /// Density of the objects spawned.
         /// </summary>
         public int Density;
-
     }
 }

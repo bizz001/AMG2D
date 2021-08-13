@@ -9,6 +9,11 @@ namespace AMG2D.Configuration
     public class PlatformsConfig
     {
         /// <summary>
+        /// Indicates wether platform generation should be enabled.
+        /// </summary>
+        public bool EnablePlatformsGeneration;
+
+        /// <summary>
         /// Indicates the maximum height, in tiles, of the platforms.
         /// </summary>
         public int MaximumHeight;
@@ -37,6 +42,5 @@ namespace AMG2D.Configuration
         /// Indicates the maximum width of the generated platforms. 
         /// </summary>
         public int MaxWidth;
-
     }
 }
