@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using AMG2D.Bootstrap;
 using AMG2D.Configuration;
-using AMG2D.Configuration.Enum;
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
 using UnityEngine;

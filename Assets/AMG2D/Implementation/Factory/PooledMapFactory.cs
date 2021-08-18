@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Collections;
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
-using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
 using AMG2D.Configuration;
-using AMG2D.Configuration.Enum;
 using System.Linq;
 
 namespace AMG2D.Implementation

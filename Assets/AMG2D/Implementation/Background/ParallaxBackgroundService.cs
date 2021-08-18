@@ -4,7 +4,7 @@ using AMG2D.Configuration;
 using AMG2D.Model;
 using UnityEngine;
 
-namespace AMG2D.Implementation.Background
+namespace AMG2D.Implementation
 {
     /// <summary>
     /// Background service implementation that provides a parallax effect to the background.

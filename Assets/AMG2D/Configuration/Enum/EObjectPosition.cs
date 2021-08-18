@@ -1,4 +1,4 @@
-﻿namespace AMG2D.Configuration.Enum
+﻿namespace AMG2D.Configuration
 {
     /// <summary>
     /// Enum that specifies where to position external objects.

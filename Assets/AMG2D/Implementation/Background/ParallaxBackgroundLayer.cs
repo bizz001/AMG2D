@@ -3,7 +3,7 @@ using AMG2D.Configuration;
 using UnityEngine;
 using static AMG2D.Configuration.BackgroundConfig;
 
-namespace AMG2D.Implementation.Background
+namespace AMG2D.Implementation
 {
     /// <summary>
     /// Class designed to hold all parallax background layer information and perform required logic to update position.

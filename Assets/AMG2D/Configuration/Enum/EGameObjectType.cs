@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AMG2D.Configuration.Enum
+namespace AMG2D.Configuration
 {
     public enum EGameObjectType
     {

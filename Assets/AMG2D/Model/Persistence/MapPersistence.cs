@@ -64,7 +64,7 @@ namespace AMG2D.Model.Persistence
             {
                 foreach (var tile in tileLine)
                 {
-                    tile.TileType = Enum.ETileType.Air;
+                    tile.TileType = ETileType.Air;
                 }
             }
         }

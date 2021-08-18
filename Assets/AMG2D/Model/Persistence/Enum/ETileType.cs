@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AMG2D.Model.Persistence.Enum
+namespace AMG2D.Model.Persistence
 {
     /// <summary>
     /// Specifies all possible tile types that can be generated.

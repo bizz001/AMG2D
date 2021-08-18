@@ -1,5 +1,4 @@
 ﻿using System;
-using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
 
 namespace AMG2D.Model.Persistence

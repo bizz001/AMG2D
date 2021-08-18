@@ -5,7 +5,6 @@ using System.Linq;
 using AMG2D.Configuration;
 using AMG2D.Model;
 using AMG2D.Model.Persistence;
-using AMG2D.Model.Persistence.Enum;
 using UnityEngine;
 using Random = System.Random;
 
@@ -135,19 +134,19 @@ namespace AMG2D.Implementation
             {
                 switch (configuredObject.Position)
                 {
-                    case Configuration.Enum.EObjectPosition.Any:
+                    case EObjectPosition.Any:
                         PositionObjectInAny(ref map, configuredObject);
                         break;
-                    case Configuration.Enum.EObjectPosition.Air:
+                    case EObjectPosition.Air:
                         PositionObjectInAir(ref map, configuredObject);
                         break;
-                    case Configuration.Enum.EObjectPosition.OnGround:
+                    case EObjectPosition.OnGround:
                         PositionObjectOnGround(ref map, configuredObject);
                         break;
-                    case Configuration.Enum.EObjectPosition.Soil:
+                    case EObjectPosition.Soil:
                         PositionObjectInSoil(ref map, configuredObject);
                         break;
-                    case Configuration.Enum.EObjectPosition.Cave:
+                    case EObjectPosition.Cave:
                         PositionObjectInCave(ref map, configuredObject);
                         break;
                     default:

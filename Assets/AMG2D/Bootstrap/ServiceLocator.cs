@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AMG2D.Implementation;
 using AMG2D.Model;
 using AMG2D.Configuration;
-using AMG2D.Implementation.Background;
 
 namespace AMG2D.Bootstrap
 {

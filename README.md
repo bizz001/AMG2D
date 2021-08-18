@@ -4,7 +4,7 @@ This project provides a [Unity](https://unity.com) script that can generate plat
 
 ## Description
 
-This project contains a full Unity project that provides a testing environment for the main tool. The main folder is the Assets folder and it contains the following:
+This project contains a full Unity project that provides a testing environment for the main tool. The main folder is the Assets folder, and it contains the following:
 
 * [2D Car](https://assetstore.unity.com/packages/tools/physics/2d-car-73763). A 2D car asset for testing purposes. Available on the Unity Asset Store.
 * AMG2D. This is the main folder of this project. It contains the main script in the form of MapGenerator.cs file. This file contains the MapGenerator class, extending [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) class that provides various configuration parameters in order to generate a complete game map. It also contains various other classes that provide different functionalities to the main class.
