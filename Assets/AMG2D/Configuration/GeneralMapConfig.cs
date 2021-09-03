@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AMG2D.Configuration.Enum;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,6 +11,12 @@ namespace AMG2D.Configuration
     [Serializable]
     public class GeneralMapConfig
     {
+        /// <summary>
+        /// Aspects collection for each type of tile.
+        /// </summary>
+        [SerializeReference]
+        public Dictionary<EGameObjectType, GameObject> Aspects;
+
         /// <summary>
         /// Height of the generated map.
         /// </summary>
@@ -79,8 +84,5 @@ namespace AMG2D.Configuration
         /// List of external objects that will be set to active once the map is finised loading.
         /// </summary>
         public List<GameObject> ObjectsToEnable;
-
-        [SerializeReference]
-        public Dictionary<EGameObjectType, GameObject> Aspects;
     }
 }

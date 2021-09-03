@@ -83,14 +83,14 @@ namespace AMG2D.Implementation
                 {
                     switch (tiles[x][y].TileType)
                     {
-                        case Model.Persistence.Enum.ETileType.Ground:
-                        case Model.Persistence.Enum.ETileType.Grass:
-                        case Model.Persistence.Enum.ETileType.Stone:
+                        case ETileType.Ground:
+                        case ETileType.Grass:
+                        case ETileType.Stone:
                             groundTilesToSet[groundTilesCounter] = _config.PlatformTile;
                             groundPositions[groundTilesCounter] = new Vector3Int(tiles[x][y].X, tiles[x][y].Y, 0);
                             groundTilesCounter++;
                             break;
-                        case Model.Persistence.Enum.ETileType.Platform:
+                        case ETileType.Platform:
                             platformTilesToSet[platformTilesCounter] = _config.PlatformTile;
                             platformPositions[platformTilesCounter] = new Vector3Int(tiles[x][y].X, tiles[x][y].Y, 0);
                             platformTilesCounter++;

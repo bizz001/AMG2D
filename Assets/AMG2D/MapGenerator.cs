@@ -11,8 +11,6 @@ namespace AMG2D
 {
     public class MapGenerator : MonoBehaviour
     {
-        [SerializeField] GameObject dirt, grass, stone;
-
         private IMapElementFactory _elementFactory;
         private IGroundGenerator _groundGenerator;
         private IPlatformGenerator _platformGenerator;
@@ -23,11 +21,11 @@ namespace AMG2D
 
         private bool courutineCompleted;
         private MapPersistence _baseMap;
+        private bool _initializationCoroutineFinished;
 
         [SerializeReference]
         public CompleteConfiguration Configuration = new CompleteConfiguration();
 
-        private bool _initializationCoroutineFinished;
 
         void Start()
         {
@@ -37,13 +35,6 @@ namespace AMG2D
                 Configuration.GeneralMapSettings.SegmentSize
                 );
 
-            var seeds = new Dictionary<string, GameObject>()
-            {
-                { EGameObjectType.GroundTile.ToString(), dirt },
-                { EGameObjectType.GrassTile.ToString(), grass },
-                { EGameObjectType.StoneTile.ToString(), stone }
-            };
-            Configuration.GeneralMapSettings.ObjectSeeds = seeds;
             ServiceLocator.Build(Configuration);
             ResolveServices();
 

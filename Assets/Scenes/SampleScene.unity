@@ -831,7 +831,7 @@ GameObject:
   - component: {fileID: 379986315}
   - component: {fileID: 379986314}
   m_Layer: 0
-  m_Name: CM vcam1
+  m_Name: vcam1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Follow: {fileID: 851454778}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 25
+    OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -1316,7 +1316,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 25
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1961,9 +1961,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a22475eecb54cd6948d8107b1f04c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dirt: {fileID: 752059146}
-  grass: {fileID: 672421516}
-  stone: {fileID: 139352317}
   Configuration:
     id: 0
   references:
@@ -1984,9 +1981,9 @@ MonoBehaviour:
     00000001:
       type: {class: GeneralMapConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        Height: 70
-        Width: 5000
-        MapBorderThickness: 0
+        Height: 22
+        Width: 500
+        MapBorderThickness: 1
         GroundTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         PlatformTile: {fileID: 11400000, guid: 0f92cfcb82ae345178a9a4088039c601, type: 2}
         GenerationSeed: 1337
@@ -2002,51 +1999,63 @@ MonoBehaviour:
       data:
         VerticalParallaxModifier: 1
         HorizonHeight: 0.5
-        MapPadding: 0
+        MapPadding: 1
         BackgroundLayers:
         - BaseImage: {fileID: 611539253}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.1
           Repetition: 3
         - BaseImage: {fileID: 1005721740}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.2
           Repetition: 3
         - BaseImage: {fileID: 916020245}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.3
           Repetition: 3
         - BaseImage: {fileID: 1268330385}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.4
           Repetition: 3
         - BaseImage: {fileID: 1929290735}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.5
           Repetition: 3
         - BaseImage: {fileID: 263994818}
-          ParallaxIntensity: 0
+          ParallaxIntensity: 0.6
           Repetition: 3
         - BaseImage: {fileID: 500155387}
-          ParallaxIntensity: 0
-          Repetition: 3
+          ParallaxIntensity: 0.95
+          Repetition: 1
         - BaseImage: {fileID: 1603297803}
           ParallaxIntensity: 1
           Repetition: 3
     00000003:
       type: {class: GroundConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        InitialHeight: 40
+        InitialHeight: 10
         Smoothness: 72
     00000004:
       type: {class: PlatformsConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        EnablePlatformsGeneration: 0
-        MaximumHeight: 0
-        MinimumHeight: 0
-        Thickness: 0
-        Density: 0
-        MinWidth: 0
-        MaxWidth: 0
+        EnablePlatformsGeneration: 1
+        MaximumHeight: 3
+        MinimumHeight: 2
+        Thickness: 1
+        Density: 55
+        MinWidth: 1
+        MaxWidth: 30
     00000005:
       type: {class: ExternalObjectsConfig, ns: AMG2D.Configuration, asm: AMG2D.Configuration}
       data:
-        ExternalObjects: []
+        ExternalObjects:
+        - UniqueID: bird
+          ObjectTemplate: {fileID: 1973826515}
+          Position: 1
+          Density: 3
+        - UniqueID: skull
+          ObjectTemplate: {fileID: 15513227}
+          Position: 3
+          Density: 6
+        - UniqueID: shroom
+          ObjectTemplate: {fileID: 399905473}
+          Position: 2
+          Density: 5
 --- !u!4 &971624180
 Transform:
   m_ObjectHideFlags: 0

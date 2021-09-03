@@ -87,7 +87,7 @@ namespace AMG2D.Implementation
                     int currentX = 0;
                     while (currentX < map.PersistedMap.Length)
                     {
-                        if (GetRandomBool(_config.Platforms.Density / 100))
+                        if (GetRandomBool(_config.Platforms.Density / 100f))
                         {
                             var platformWidth = GetRandomFromRange(_config.Platforms.MinWidth, _config.Platforms.MaxWidth);
                             var platformHeight = GetRandomFromRange(_config.Platforms.MinimumHeight, _config.Platforms.MaximumHeight);

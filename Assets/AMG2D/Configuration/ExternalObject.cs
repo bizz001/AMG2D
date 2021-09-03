@@ -1,5 +1,4 @@
 ﻿using System;
-using AMG2D.Configuration.Enum;
 using UnityEngine;
 
 namespace AMG2D.Configuration

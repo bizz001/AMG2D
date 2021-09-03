@@ -14,6 +14,7 @@ namespace AMG2D.Implementation
     /// </summary>
     public class PooledMapElementFactory : IMapElementFactory
     {
+        private const float CENTER_OFFSET = 0.5f;
         private Dictionary<string, Queue<GameObject>> _pools;
         private CompleteConfiguration _config;
         private int _lastPlayerSegment;
@@ -30,14 +31,12 @@ namespace AMG2D.Implementation
             _config = mapConfig ?? throw new ArgumentNullException($"Argument {nameof(mapConfig)} cannot be null");
             _generalSettings = _config.GeneralMapSettings;
             _pools = new Dictionary<string, Queue<GameObject>>();
-            foreach (var seed in _generalSettings.ObjectSeeds)
+            if(_config.ExternalObjects != null && _config.ExternalObjects.ExternalObjects != null)
             {
-                _pools.Add(seed.Key, new Queue<GameObject>());
-            }
-
-            foreach (var externalObject in _config.ExternalObjects.ExternalObjects)
-            {
-                _pools.Add(externalObject.UniqueID, new Queue<GameObject>());
+                foreach (var externalObject in _config.ExternalObjects.ExternalObjects)
+                {
+                    _pools.Add(externalObject.UniqueID, new Queue<GameObject>());
+                }
             }
         }
 
@@ -56,7 +55,6 @@ namespace AMG2D.Implementation
 
         private IEnumerator ActivateExternalObjectWithSegmentation(List<ExternalObjectInfo> externalObjects)
         {
-
              var currentPlayerSegment = (int)(_generalSettings.Camera.transform.position.x / _generalSettings.SegmentSize) + 1;
             if (currentPlayerSegment == _lastPlayerSegment) yield break;
 
@@ -99,12 +97,14 @@ namespace AMG2D.Implementation
                 if(_pools[obj.TypeID].Count > 0)
                 {
                     obj.SpawnedObject = _pools[obj.TypeID].Dequeue();
-                    obj.SpawnedObject.transform.position = new Vector2(obj.AsignedTile.X + 0.5f, obj.AsignedTile.Y + 0.5f);
+                    obj.SpawnedObject.transform.position = new Vector2(obj.AsignedTile.X + CENTER_OFFSET, obj.AsignedTile.Y + CENTER_OFFSET);
                     obj.SpawnedObject.SetActive(true);
                 }
                 else
                 {
-                    obj.SpawnedObject = MonoBehaviour.Instantiate(obj.Template, new Vector2(obj.AsignedTile.X + 0.5f, obj.AsignedTile.Y + 0.5f), Quaternion.identity);
+                    obj.SpawnedObject = MonoBehaviour.Instantiate(obj.Template,
+                        new Vector2(obj.AsignedTile.X + CENTER_OFFSET, obj.AsignedTile.Y + CENTER_OFFSET),
+                        Quaternion.identity);
                 }
             }
             yield break;

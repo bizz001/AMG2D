@@ -128,7 +128,6 @@ namespace AMG2D.Implementation
             }
             _lastPlayerSegment = currentPlayerSegment;
             _lastActiveSegments = activeSegments;
-
         }
 
         /// <summary>
